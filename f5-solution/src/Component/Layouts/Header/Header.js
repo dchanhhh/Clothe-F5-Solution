@@ -1,69 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { UserOutlined, ShoppingCartOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Layout, Menu, Button, Dropdown, Space, Input, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import logo_v1 from '../../../assets/images/Logo.png';
+import { useState, useEffect } from "react";
+import {
+  UserOutlined,
+  ShoppingCartOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { FiShoppingCart } from "react-icons/fi";
+import { GoPerson } from "react-icons/go";
+import { Menu, Button, Dropdown, Space, Input, message } from "antd";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
-const { Header } = Layout;
-
-const items1 = [
-  { key: '/', label: 'Cửa hàng' },
-  { key: '/Products', label: 'Sản phẩm' },
-  { key: '/contact', label: 'Liên hệ' },
-  { key: '/album', label: 'Bộ sưu tập' }
+const listMenus = [
+  { path: "/", title: "Cửa hàng" },
+  { path: "/Products", title: "Sản phẩm" },
+  { path: "/album", title: "Bộ sưu tập" },
+  { path: "/contact", title: "Liên hệ" },
 ];
 
-const CustomHeader = () => {
+const HeaderF5 = () => {
   const navigate = useNavigate();
-  const [TaiKhoan, setUsername] = useState(null);
+  const location = useLocation();
+  const [userName, setUserName] = useState(null);
+  const [activeMenu, setActiveMenu] = useState("/");
   const [userProfile, setUserProfile] = useState({});
   const [MaKh, setMaKhachHang] = useState(null);
-  const storedUser = localStorage.getItem('user');
+  const storedUser = localStorage.getItem("user");
   const user = JSON.parse(storedUser);
+
   useEffect(() => {
     // Kiểm tra thông tin người dùng từ localStorage
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setUsername(user.TaiKhoan);
+      setUserName(user.userName);
     }
   }, []);
 
   // Xử lý đăng nhập
   const handleLoginClick = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   const handleOncartClick = () => {
     // Kiểm tra nếu người dùng không đăng nhập
-    const storedUser = JSON.parse(localStorage.getItem('user')); // Parse dữ liệu từ localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user")); // Parse dữ liệu từ localStorage
     // Kiểm tra nếu người dùng không đăng nhập
     if (!storedUser || !storedUser.TaiKhoan) {
       message.info("Vui lòng đăng nhập để xem giỏ hàng");
-      navigate('/Login');
+      navigate("/Login");
     } else {
       // Điều hướng đến giỏ hàng của người dùng đã đăng nhập
       navigate(`/cart/${storedUser.TaiKhoan}`);
     }
-  }
+  };
   const handleLogoutClick = () => {
     // Xử lý đăng xuất
-    localStorage.removeItem('user');
-    setUsername(null); // Reset lại state username
-    navigate('/'); // Điều hướng tới trang chủ sau khi đăng xuất
+    localStorage.removeItem("user");
+    setUserName(null); // Reset lại state username
+    navigate("/"); // Điều hướng tới trang chủ sau khi đăng xuất
   };
   const handleProfileClick = () => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     const user = JSON.parse(storedUser);
-    console.log(user.MaKh)
-    setUsername(user.MaKh);
+    setUserName(user.MaKh);
     if (user.MaKh) {
       navigate(`/Profile/${user.MaKh}`);
     }
-
   };
-  const handleMenuClick = ({ key }) => {
-    navigate(key); // Điều hướng đến đường dẫn tương ứng với key
+
+  const handleMenuClick = (path) => {
+    navigate(path); // Điều hướng đến đường dẫn tương ứng với path
   };
 
   // Menu khi người dùng đã đăng nhập
@@ -72,44 +77,47 @@ const CustomHeader = () => {
       <Menu.Item key="1" onClick={handleProfileClick}>
         Thông tin cá nhân
       </Menu.Item>
-      <Menu.Item key="2" danger onClick={handleLogoutClick} icon={<LogoutOutlined />}>
+      <Menu.Item
+        key="2"
+        danger
+        onClick={handleLogoutClick}
+        icon={<LogoutOutlined />}
+      >
         Đăng xuất
       </Menu.Item>
     </Menu>
   );
 
-  return (
-    <Header
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        justifyContent: 'space-between',
-        padding: '20px 40px',
-        height: '120px',
-      }}
-    >
-      {/* Logo và thương hiệu */}
-      <div className="logo-brand" style={{ display: 'flex', alignItems: 'center' }}>
-        <img src={logo_v1} alt="logo" style={{ height: '150px', marginRight: '3px' }} />
-        <span className="brand" style={{ fontSize: '18px', fontWeight: 'bold' }}>
-          <h2><span style={{ color: 'orange' }}>F5</span> Fashion</h2>
-        </span>
-      </div>
+  useEffect(() => {
+    setActiveMenu(location.pathname); // Cập nhật activeMenu theo path hiện tại
+  }, [location.pathname]);
 
-      {/* Menu điều hướng */}
-      <Menu
-        theme="light"
-        mode="horizontal"
-        defaultSelectedKeys={['/']}
-        onClick={handleMenuClick}
-        items={items1}
-        style={{
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      />
+  return (
+    <div className="flex items-center bg-white justify-between px-12 h-[60px]">
+      {/* Logo */}
+      <Link to={"/"}>
+        <div className="flex gap-2 text-2xl font-bold">
+          <span className="text-orange-500">F5</span>
+          <span>FASHION</span>
+        </div>
+      </Link>
+
+      {/* Menu */}
+      <div className="flex">
+        {listMenus.map(({ path, title }) => {
+          return (
+            <div
+              key={title}
+              className={`text-base p-[18px] hover:bg-[#ffe4e1] hover:font-medium cursor-pointer ${
+                activeMenu === path ? "bg-[#f89f95] font-semibold" : ""
+              }`}
+              onClick={() => handleMenuClick(path)}
+            >
+              {title}
+            </div>
+          );
+        })}
+      </div>
 
       {/* Thanh tìm kiếm */}
       <div>
@@ -117,24 +125,28 @@ const CustomHeader = () => {
       </div>
 
       {/* Phần giỏ hàng và thông tin tài khoản */}
-      <div className="actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <Button onClick={handleOncartClick} type="link" icon={<ShoppingCartOutlined />} style={{ fontSize: '16px' }}>Giỏ hàng</Button>
-        {TaiKhoan ? (
+      <div className="actions flex items-center gap-4">
+        <div
+          onClick={handleOncartClick}
+          className="flex gap-2 cursor-pointer text-base items-center font-bold text-primary py-[18px] px-2"
+        >
+          <FiShoppingCart size={"1.2em"} /> Giỏ hàng
+        </div>
+        {user ? (
           <Dropdown overlay={userMenu} placement="bottomRight">
-            <Button type="link">
-              <Space>
-                <span style={{ fontSize: '16px' }}>Xin chào, {TaiKhoan}</span>
-              </Space>
-            </Button>
+            <div className="text-base">Xin chào, {user.TaiKhoan}</div>
           </Dropdown>
         ) : (
-          <Button type="link" icon={<UserOutlined />} style={{ fontSize: '16px' }} onClick={handleLoginClick}>
-            Đăng nhập
-          </Button>
+          <div
+            className="flex gap-2 cursor-pointer text-base items-center font-bold text-primary py-[18px] px-2"
+            onClick={handleLoginClick}
+          >
+            <GoPerson size={"1.3em"} /> Đăng nhập
+          </div>
         )}
       </div>
-    </Header>
+    </div>
   );
 };
 
-export default CustomHeader;
+export default HeaderF5;
