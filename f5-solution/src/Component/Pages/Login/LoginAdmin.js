@@ -1,163 +1,118 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Row, Col, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import 'antd/dist/reset.css';
-import BackgroundImage from '../../../assets/images/Back_Login.png'; // Đường dẫn tới hình nền
-import logo_v1 from '../../../assets/images/Logo.png';
-import { useNavigate } from 'react-router-dom';
-import AuthService from '../../../Service/AuthService'; // Import AuthService
-import { jwtDecode } from 'jwt-decode';
-const LoginAdmin = () => {
-    const [loading, setLoading] = useState(false); // Trạng thái tải
-    const navigate = useNavigate();
+import React, { useState } from "react";
+import { message } from "antd";
+import "antd/dist/reset.css";
+import BackgroundImage from "../../../assets/images/Back_Login.png"; // Đường dẫn tới hình nền
+import { Link, useNavigate } from "react-router-dom";
+import AuthService from "../../../Service/AuthService"; // Import AuthService
+import { jwtDecode } from "jwt-decode"; // Thêm thư viện jwt-decode để giải mã token
 
-    const onFinish = async (values) => {
-        setLoading(true);
-        try {
-            const response = await AuthService.loginNhanVien(values.username, values.password);
-            if (response && response.token) {
-                // Giải mã token JWT (nếu sử dụng JWT)
-                const decodedToken = jwtDecode(response.token)
-                // Lưu thông tin người dùng và token vào localStorage
-                localStorage.setItem('user', JSON.stringify(decodedToken));
-                localStorage.setItem('token', response.token);
-                console.log(decodedToken)
-                navigate("/Dashboard")
-                message.success('Đăng nhập thành công với vai trò nhân viên');
-            } else {
-                message.error('Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại.');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            message.error('Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại.');
-        } finally {
-            setLoading(false);
-        }
-    };
+const Login = () => {
+  const [loading, setLoading] = useState(false); // Trạng thái tải
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    const handleForgotPassword = () => {
-        navigate('/resetPassword');
-    };
+  const onFinish = async (e) => {
+    e.preventDefault();
 
-    const handleRegister = () => {
-        navigate('/register')
-    };
+    if (!username || !password) {
+      message.error("Vui lòng điền đầy đủ tài khoản và mật khẩu.");
+      return;
+    }
 
-    return (
-        <div style={{
-            position: 'relative',
-            backgroundImage: `url(${BackgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            height: '100vh',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            overflow: 'hidden'
-        }}>
-            <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    setLoading(true);
 
-                zIndex: 1,
-            }} />
+    try {
+      const response = await AuthService.loginNhanVien(username, password);
+      if (response && response.token) {
+        // Giải mã token JWT (nếu sử dụng JWT)
+        console.log(response);
+        const decodedToken = jwtDecode(response.token);
+        // Lưu thông tin người dùng và token vào localStorage
+        localStorage.setItem("user", JSON.stringify(decodedToken));
+        localStorage.setItem("token", response.token);
 
-            <div style={{
-                position: 'relative',
-                zIndex: 2,
-                width: '100%',
-                maxWidth: '600px',
-                padding: '30px',
-                backgroundColor: 'white',
-                borderRadius: '10px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <img
-                    src={logo_v1}
-                    alt="Logo"
-                    style={{ width: '150px', marginBottom: '20px' }}
-                />
+        navigate("/");
 
-                <h1 style={{
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                    color: '#333',
-                    marginBottom: '20px',
-                    letterSpacing: '1px'
-                }}>
-                    ĐĂNG NHẬP
-                </h1>
+        message.success("Đăng nhập thành công!");
+      } else {
+        message.error(
+          "Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại!"
+        );
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      message.error(
+        "Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                <Form
-                    name="normal_login"
-                    className="login-form"
-                    initialValues={{ remember: true }}
-                    onFinish={onFinish}
-                    style={{ width: '100%' }}
-                >
-                    <Form.Item
-                        name="username"
-                        rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
-                    >
-                        <Input
-                            size="large"
-                            style={{ width: '100%' }}
-                            prefix={<UserOutlined />}
-                            placeholder="Tên đăng nhập"
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="password"
-                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-                    >
-                        <Input
-                            prefix={<LockOutlined />}
-                            type="password"
-                            placeholder="Mật khẩu"
-                            size="large"
-                            style={{ width: '100%' }}
-                        />
-                    </Form.Item>
-
-                    <Form.Item style={{ textAlign: 'center' }}>
-                        <Button
-                            type="primary"
-                            size="large"
-                            htmlType="submit"
-                            className="login-form-button"
-                            loading={loading} // Hiển thị trạng thái tải
-                            style={{
-                                width: '100%',
-                                backgroundColor: 'black',
-                                color: 'white',
-                                borderColor: 'black',
-                                borderRadius: '5px',
-                            }}
-                        >
-                            Đăng nhập
-                        </Button>
-                    </Form.Item>
-
-                    <Row style={{ textAlign: 'center', marginBottom: '20px' }}>
-                        <Col span={24}>
-                            <a href="#" onClick={handleForgotPassword} style={{ color: '#1890ff' }}>
-                                Quên mật khẩu?
-                            </a>
-                        </Col>
-                    </Row>
-                </Form>
-            </div>
+  return (
+    <div
+      className="relative flex items-center justify-center overflow-hidden bg-cover bg-center h-[100vh]"
+      style={{
+        backgroundImage: `url(${BackgroundImage})`,
+      }}
+    >
+      <div className="absolute top-0 right-0 bottom-0 left-0 bg-[#00000033]"></div>
+      <div className="relative flex flex-col gap-6 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
+        <Link to={"/"}>
+          <div className="flex gap-2 text-4xl font-bold">
+            <span className="text-orange-500">F5</span>
+            <span>FASHION</span>
+          </div>
+        </Link>
+        <div className="flex flex-col gap-3 items-center w-full">
+          <div className="text-2xl font-bold">ĐĂNG NHẬP</div>
+          <div className="flex flex-col gap-1 items-start w-full">
+            <label htmlFor="username" className="text-base font-medium mb-0">
+              Tên đăng nhập
+            </label>
+            <input
+              className="outline-none text-base leading-5 font-normal px-3 py-5"
+              name="username"
+              id="username"
+              type="text"
+              placeholder="Tên đăng nhập"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1 items-start w-full">
+            <label htmlFor="password" className="text-base font-medium mb-0">
+              Mật khẩu
+            </label>
+            <input
+              className="outline-none text-base leading-5 font-normal px-3 py-5 rounded-lg"
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Mật khẩu"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div
+            className="flex w-full justify-end text-sm text-primary hover:underline cursor-pointer"
+            onClick={() => navigate("/resetPassword")}
+          >
+            Quên mật khẩu?
+          </div>
+          <div
+            className="flex items-center justify-center cursor-pointer bg-black text-white font-bold p-2.5 w-full text-sm rounded-lg"
+            onClick={onFinish}
+          >
+            Đăng nhập
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default LoginAdmin;
+export default Login;

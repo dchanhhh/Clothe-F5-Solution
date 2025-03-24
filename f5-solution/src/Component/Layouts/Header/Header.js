@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
 import { FiShoppingCart } from "react-icons/fi";
 import { GoPerson } from "react-icons/go";
-import { Menu, Button, Dropdown, Space, Input, message } from "antd";
+import { MdOutlineLogout } from "react-icons/md";
+import { message } from "antd";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
 const listMenus = [
@@ -71,23 +67,6 @@ const HeaderF5 = () => {
     navigate(path); // Điều hướng đến đường dẫn tương ứng với path
   };
 
-  // Menu khi người dùng đã đăng nhập
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="1" onClick={handleProfileClick}>
-        Thông tin cá nhân
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        danger
-        onClick={handleLogoutClick}
-        icon={<LogoutOutlined />}
-      >
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
-
   useEffect(() => {
     setActiveMenu(location.pathname); // Cập nhật activeMenu theo path hiện tại
   }, [location.pathname]);
@@ -121,7 +100,7 @@ const HeaderF5 = () => {
 
       {/* Thanh tìm kiếm */}
       <div>
-        <Input placeholder="Search" />
+        <input placeholder="Search" />
       </div>
 
       {/* Phần giỏ hàng và thông tin tài khoản */}
@@ -133,9 +112,26 @@ const HeaderF5 = () => {
           <FiShoppingCart size={"1.2em"} /> Giỏ hàng
         </div>
         {user ? (
-          <Dropdown overlay={userMenu} placement="bottomRight">
-            <div className="text-base">Xin chào, {user.TaiKhoan}</div>
-          </Dropdown>
+          <div className="relative group text-base font-bold text-primary cursor-pointer">
+            Xin chào, {user.TaiKhoan}
+            <div className="absolute top-full hidden group-hover:block rounded-lg overflow-hidden p-1 z-10 text-sm text-[#333] font-normal bg-white border border-[#cecece] drop-shadow-md">
+              <div
+                key="1"
+                onClick={handleProfileClick}
+                className="py-2 px-3 hover:bg-[#dcdcdc] rounded-lg"
+              >
+                Thông tin cá nhân
+              </div>
+              <div
+                key="2"
+                onClick={handleLogoutClick}
+                className="flex items-center gap-1.5 py-2 px-3 hover:bg-[#FF4D4F] hover:text-white rounded-lg"
+              >
+                <MdOutlineLogout size={"1.2em"} />
+                Đăng xuất
+              </div>
+            </div>
+          </div>
         ) : (
           <div
             className="flex gap-2 cursor-pointer text-base items-center font-bold text-primary py-[18px] px-2"

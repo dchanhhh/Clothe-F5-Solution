@@ -1,25 +1,69 @@
-import React from 'react';
-import { Form, Input, Button, Row, Col } from 'antd';
-import { MailOutlined } from '@ant-design/icons';
-import 'antd/dist/reset.css';
-import BackgroundImage from '../../../assets/images/Back_Login.png'; // Replace with your background image path
-import logo_v1 from '../../../assets/images/Logo.png';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import "antd/dist/reset.css";
+import BackgroundImage from "../../../assets/images/Back_Login.png"; // Replace with your background image path
+import { Link, useNavigate } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 
 const ResetPassword = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
-    const onFinish = (values) => {
-        console.log('Email submitted for password reset:', values);
-        // Implement password reset logic (e.g., send request to API)
-    };
+  const onFinish = (values) => {
+    console.log("Email submitted for password reset:", values);
+    // Implement password reset logic (e.g., send request to API)
+  };
 
-    const handleLoginRedirect = () => {
-        navigate('/Login');
-    };
-
-    return (
-        <div style={{
+  return (
+    <div
+      className="relative flex items-center justify-center overflow-hidden bg-cover bg-center h-[100vh]"
+      style={{
+        backgroundImage: `url(${BackgroundImage})`,
+      }}
+    >
+      <div className="absolute top-0 right-0 bottom-0 left-0 bg-[#00000033]"></div>
+      <div className="relative flex flex-col gap-6 items-center justify-center w-full max-w-[500px] px-8 pb-8 pt-6 bg-white rounded-xl drop-shadow-md">
+        <div
+          className="flex items-center gap-2 w-full text-base font-semibold cursor-pointer"
+          onClick={() => navigate("/Login")}
+        >
+          <BiArrowBack size={"1.3em"} />
+          <span>Quay lại</span>
+        </div>
+        <div className="flex flex-col gap-6 w-full">
+          <Link to={"/"}>
+            <div className="flex items-center justify-center gap-2 text-4xl font-bold">
+              <span className="text-orange-500">F5</span>
+              <span>FASHION</span>
+            </div>
+          </Link>
+          <div className="flex flex-col gap-3 items-center w-full">
+            <div className="text-2xl font-bold">QUÊN MẬT KHẨU</div>
+            <div className="flex flex-col gap-1 items-start w-full">
+              <label htmlFor="email" className="text-base font-medium mb-0">
+                Email khôi phục
+              </label>
+              <input
+                className="outline-none text-base leading-5 font-normal px-3 py-5"
+                name="email"
+                id="email"
+                type="text"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => email(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div
+            className="flex items-center justify-center cursor-pointer bg-black text-white font-bold p-2.5 w-full text-sm rounded-lg"
+            onClick={onFinish}
+          >
+            Xác nhận
+          </div>
+        </div>
+      </div>
+    </div>
+    /* <div style={{
             position: 'relative',
             backgroundImage: `url(${BackgroundImage})`,
             backgroundSize: 'cover',
@@ -120,8 +164,8 @@ const ResetPassword = () => {
                     </Form>
                 </div>
             </div>
-        </div>
-    );
+        </div> */
+  );
 };
 
 export default ResetPassword;
