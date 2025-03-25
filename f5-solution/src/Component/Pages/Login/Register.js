@@ -1,51 +1,70 @@
-import React from "react";
-import { Form, Input, Button, Row, Col, DatePicker, Radio } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  MailOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
-import "antd/dist/reset.css";
+import React, { useState } from "react";
 import BackgroundImage from "../../../assets/images/Back_Login.png";
-import logo_v1 from "../../../assets/images/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../../../Service/AuthService"; // Import AuthService
+import AuthService from "../../../Service/AuthService";
+import { BiArrowBack } from "react-icons/bi";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    hoVaTenKh: "",
+    taiKhoan: "",
+    matKhau: "",
+    email: "",
+    soDienThoai: "",
+    gioiTinh: null,
+    ngaySinh: "",
+  });
 
-  const handleLogin = () => {
-    navigate("/login");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]:
+        name === "gioiTinh"
+          ? value === "true"
+          : name === "ngaySinh"
+          ? new Date(value).toISOString().split("T")[0]
+          : value,
+    }));
   };
 
-  const onFinish = async (values) => {
+  const onFinish = async () => {
+    if (
+      !formData.hoVaTenKh.trim() ||
+      !formData.taiKhoan.trim() ||
+      !formData.matKhau.trim() ||
+      !formData.email.trim() ||
+      !formData.soDienThoai.trim() ||
+      formData.gioiTinh === null ||
+      !formData.ngaySinh
+    ) {
+      alert("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
     try {
       const customerCode = `KH${Math.random()
         .toString(36)
         .substr(2, 9)
         .toUpperCase()}`;
-      // Thực hiện đăng ký khách hàng qua AuthService
+
       const response = await AuthService.registerCustomer({
         maKh: customerCode,
-        hoVaTenKh: values.hoVaTenKh,
-        taiKhoan: values.username,
-        matKhau: values.password,
-        email: values.email,
-        soDienThoai: values.soDienThoai,
-        gioiTinh: values.gioiTinh,
-        ngaySinh: values.ngaySinh.format("YYYY-MM-DD"), // Chuyển đổi ngày sinh về định dạng API cần
+        ...formData,
       });
 
       if (response && response.token) {
         localStorage.setItem("user", JSON.stringify(response));
+        console.log(response);
         alert("Đăng ký thành công!");
-        navigate("/"); // Chuyển hướng sau khi đăng ký thành công
+        navigate("/Login");
       } else {
         alert("Đăng ký thất bại. Vui lòng kiểm tra thông tin và thử lại.");
       }
     } catch (error) {
-      // Bắt và ném lỗi ra bên ngoài
+      console.error(error);
       alert("Đăng ký thất bại. Vui lòng kiểm tra thông tin và thử lại.");
     }
   };
@@ -58,7 +77,14 @@ const Register = () => {
       }}
     >
       <div className="absolute top-0 right-0 bottom-0 left-0 bg-[#00000033]"></div>
-      <div className="relative flex flex-col gap-6 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
+      <div className="relative flex flex-col gap-4 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
+        <div
+          className="flex items-center gap-2 w-full text-base font-semibold cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <BiArrowBack size={"1.3em"} />
+          <span>Trang chủ</span>
+        </div>
         <Link to={"/"}>
           <div className="flex gap-2 text-4xl font-bold">
             <span className="text-orange-500">F5</span>
@@ -77,38 +103,38 @@ const Register = () => {
               id="hoVaTenKh"
               type="text"
               placeholder="Họ và tên"
-              //   value={fullname}
-              //   onChange={(e) => setFullname(e.target.value)}
+              value={formData.hoVaTenKh}
+              onChange={handleChange}
               required
             />
           </div>
           <div className="flex flex-col gap-1 items-start w-full">
-            <label htmlFor="username" className="text-base font-medium mb-0">
+            <label htmlFor="taiKhoan" className="text-base font-medium mb-0">
               Tên tài khoản
             </label>
             <input
               className="outline-none text-base leading-5 font-normal px-3 py-5"
-              name="username"
-              id="username"
+              name="taiKhoan"
+              id="taiKhoan"
               type="text"
               placeholder="Tên tài khoản"
-              //   value={username}
-              //   onChange={(e) => setUsername(e.target.value)}
+              value={formData.taiKhoan}
+              onChange={handleChange}
               required
             />
           </div>
           <div className="flex flex-col gap-1 items-start w-full">
-            <label htmlFor="password" className="text-base font-medium mb-0">
+            <label htmlFor="matKhau" className="text-base font-medium mb-0">
               Mật khẩu
             </label>
             <input
               className="outline-none text-base leading-5 font-normal px-3 py-5"
-              name="password"
-              id="password"
+              name="matKhau"
+              id="matKhau"
               type="password"
               placeholder="Mật khẩu"
-              //   value={password}
-              //   onChange={(e) => setPassword(e.target.value)}
+              value={formData.matKhau}
+              onChange={handleChange}
               required
             />
           </div>
@@ -123,105 +149,78 @@ const Register = () => {
               type="email"
               placeholder="Email đăng ký"
               pattern=".+@gmail\.com"
-              //   value={email}
-              //   onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
           <div className="flex flex-col gap-1 items-start w-full">
-            <label htmlFor="phoneNumber" className="text-base font-medium mb-0">
+            <label htmlFor="soDienThoai" className="text-base font-medium mb-0">
               Số điện thoại
             </label>
             <input
               className="outline-none text-base leading-5 font-normal px-3 py-5"
-              name="phoneNumber"
-              id="phoneNumber"
+              name="soDienThoai"
+              id="soDienThoai"
               type="text"
               size={10}
               placeholder="Số điện thoại"
-              //   value={phoneNumber}
-              //   onChange={(e) => setPhoneNumber(e.target.value)}
+              value={formData.soDienThoai}
+              onChange={handleChange}
               required
             />
           </div>
           <div className="flex flex-col gap-1 items-start w-full">
-            <label htmlFor="gender" className="text-base font-medium mb-0">
+            <label htmlFor="gioiTinh" className="text-base font-medium mb-0">
               Giới tính
             </label>
             <select
               className="outline-none text-base leading-5 font-normal h-[42px] pl-2"
-              id="gender"
+              id="gioiTinh"
+              name="gioiTinh"
+              value={formData.gioiTinh}
+              onChange={handleChange}
               required
             >
               <option value="" selected>
                 Chọn giới tính
               </option>
-              <option>Nam</option>
-              <option>Nữ</option>
+              <option value={true}>Nam</option>
+              <option value={false}>Nữ</option>
             </select>
           </div>
-          <Form
-            name="register_form"
-            className="register-form"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            style={{ textAlign: "center" }}
-          >
-            <Form.Item
-              name="gioiTinh"
-              rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
-            >
-              <Radio.Group>
-                <Radio value={true}>Nam</Radio>
-                <Radio value={false}>Nữ</Radio>
-              </Radio.Group>
-            </Form.Item>
-
-            <Form.Item
+          <div className="flex flex-col gap-1 items-start w-full">
+            <label htmlFor="ngaySinh" className="text-base font-medium mb-0">
+              Ngày sinh
+            </label>
+            <input
+              className="outline-none text-base leading-5 font-normal px-3 py-5"
               name="ngaySinh"
-              rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
+              id="ngaySinh"
+              type="date"
+              placeholder="Chọn ngày sinh"
+              value={formData.ngaySinh}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-4 w-full">
+          <div
+            onClick={onFinish}
+            className="flex items-center justify-center w-full bg-primary text-white p-2.5 text-sm font-bold rounded-lg cursor-pointer hover:scale-[103%] transition duration-200"
+          >
+            Đăng ký
+          </div>
+          <div className="flex gap-2 items-center justify-center text-base">
+            <span>Bạn đã có tài khoản?</span>
+            <div
+              onClick={() => navigate("/Login")}
+              className="font-semibold text-primary cursor-pointer hover:underline"
             >
-              <DatePicker placeholder="Ngày sinh" style={{ width: "90%" }} />
-            </Form.Item>
-
-            <Form.Item style={{ textAlign: "center" }}>
-              <Button
-                type="primary"
-                size="large"
-                htmlType="submit"
-                className="register-form-button"
-                style={{
-                  width: "60%",
-                  backgroundColor: "black",
-                  color: "white",
-                  borderColor: "black",
-                }}
-              >
-                Đăng kí
-              </Button>
-            </Form.Item>
-
-            <Row style={{ textAlign: "center", marginBottom: "20px" }}>
-              <Col span={24}>Bạn đã có tài khoản</Col>
-            </Row>
-
-            <Form.Item style={{ textAlign: "center" }}>
-              <Button
-                type="default"
-                size="large"
-                className="register-form-button"
-                style={{
-                  width: "60%",
-                  backgroundColor: "white",
-                  color: "black",
-                  borderColor: "black",
-                }}
-                onClick={handleLogin}
-              >
-                Đăng nhập
-              </Button>
-            </Form.Item>
-          </Form>
+              Đăng nhập
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import BackgroundImage from "../../../assets/images/Back_Login.png"; // Đườn
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../../../Service/AuthService"; // Import AuthService
 import { jwtDecode } from "jwt-decode"; // Thêm thư viện jwt-decode để giải mã token
+import { BiArrowBack } from "react-icons/bi";
 
 const Login = () => {
   const [loading, setLoading] = useState(false); // Trạng thái tải
@@ -58,7 +59,14 @@ const Login = () => {
       }}
     >
       <div className="absolute top-0 right-0 bottom-0 left-0 bg-[#00000033]"></div>
-      <div className="relative flex flex-col gap-6 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
+      <div className="relative flex flex-col gap-4 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
+        <div
+          className="flex items-center gap-2 w-full text-base font-semibold cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <BiArrowBack size={"1.3em"} />
+          <span>Trang chủ</span>
+        </div>
         <Link to={"/"}>
           <div className="flex gap-2 text-4xl font-bold">
             <span className="text-orange-500">F5</span>
@@ -104,7 +112,7 @@ const Login = () => {
             Quên mật khẩu?
           </div>
           <div
-            className="flex items-center justify-center cursor-pointer bg-black text-white font-bold p-2.5 w-full text-sm rounded-lg"
+            className="flex items-center justify-center cursor-pointer bg-primary hover:scale-[103%] transition duration-200 text-white font-bold p-2.5 w-full text-sm rounded-lg"
             onClick={onFinish}
           >
             Đăng nhập
@@ -113,7 +121,7 @@ const Login = () => {
         <div className="flex flex-col gap-2 w-full items-center text-sm font-medium">
           <div className="">Bạn chưa có tài khoản?</div>
           <div
-            className="flex items-center justify-center cursor-pointer bg-white text-black border border-black font-bold p-2.5 w-full text-sm rounded-lg hover:border-[#1877f2] hover:bg-primary hover:text-white"
+            className="flex items-center justify-center cursor-pointer bg-white text-black border border-black font-bold p-2.5 w-full text-sm rounded-lg hover:scale-[103%] transition duration-200"
             onClick={() => navigate("/register")}
           >
             Đăng ký ngay

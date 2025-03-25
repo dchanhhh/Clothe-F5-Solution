@@ -58,7 +58,7 @@ const Login = () => {
       }}
     >
       <div className="absolute top-0 right-0 bottom-0 left-0 bg-[#00000033]"></div>
-      <div className="relative flex flex-col gap-6 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
+      <div className="relative flex flex-col gap-4 items-center justify-center w-full max-w-[500px] p-8 bg-white rounded-xl drop-shadow-md">
         <Link to={"/"}>
           <div className="flex gap-2 text-4xl font-bold">
             <span className="text-orange-500">F5</span>
@@ -104,7 +104,7 @@ const Login = () => {
             Quên mật khẩu?
           </div>
           <div
-            className="flex items-center justify-center cursor-pointer bg-black text-white font-bold p-2.5 w-full text-sm rounded-lg"
+            className="flex items-center justify-center cursor-pointer bg-primary hover:scale-[103%] transition duration-200 text-white font-bold p-2.5 w-full text-sm rounded-lg"
             onClick={onFinish}
           >
             Đăng nhập
