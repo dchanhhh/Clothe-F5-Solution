@@ -1,45 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import {
   Layout,
-  Menu,
-  Button,
-  Dropdown,
-  Space,
-  Input,
   Table,
-  Modal,
   Form,
-  Input as AntdInput,
-  Select,
   Row,
   Col,
   message,
   Image,
   Typography,
-  Card,
-  Divider,
   Tag,
 } from "antd";
 
-import logo_v1 from "../../../assets/images/Logo.png"; // Đảm bảo đường dẫn hình ảnh đúng
 import "./Home.css";
 import HeaderF5 from "../../Layouts/Header/Header";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
-
-const items1 = [
-  { key: "/", label: "Cửa hàng" },
-  { key: "/Products", label: "Sản phẩm" },
-  { key: "/contact", label: "Liên hệ" },
-  { key: "/album", label: "Bộ sưu tập" },
-];
 
 const ViewOrderInformation = () => {
   const navigate = useNavigate();
@@ -92,55 +69,6 @@ const ViewOrderInformation = () => {
       fetchOrders(); // Call the fetch function when the component mounts
     }
   }, []);
-
-  const handleOncartClick = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || !storedUser.TaiKhoan) {
-      message.info("Vui lòng đăng nhập để xem giỏ hàng");
-      navigate("/Login");
-    } else {
-      navigate(`/cart/${storedUser.TaiKhoan}`);
-    }
-  };
-
-  const handleLogoutClick = () => {
-    localStorage.removeItem("user");
-    setUsername(null);
-    navigate("/");
-  };
-
-  const handleProfileClick = () => {
-    const storedUser = localStorage.getItem("user");
-    const user = JSON.parse(storedUser);
-    setUsername(user.MaKh);
-    if (user.MaKh) {
-      navigate(`/Profile/${user.MaKh}`);
-    }
-  };
-
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-
-  const handleMenuClick = ({ key }) => {
-    navigate(key);
-  };
-
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="1" onClick={handleProfileClick}>
-        Thông tin cá nhân
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        danger
-        onClick={handleLogoutClick}
-        icon={<LogoutOutlined />}
-      >
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
 
   const getTotalPrice = () =>
     cartItems.reduce((total, order) => total + order.tongTien, 0);

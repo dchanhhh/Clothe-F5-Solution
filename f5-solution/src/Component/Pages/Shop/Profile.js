@@ -1,30 +1,19 @@
 import React, { useState, useEffect } from "react";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Layout,
-  Menu,
   Button,
-  Dropdown,
-  Space,
   Input,
   Row,
   Col,
   Card,
   Avatar,
   Form,
-  Radio,
   Modal,
   message,
   Select,
 } from "antd";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import logo_v1 from "../../../assets/images/Logo.png";
+import { useNavigate } from "react-router-dom";
 import { Content } from "antd/es/layout/layout";
 import moment from "moment";
 import AdminService from "../../../Service/AdminService";
@@ -32,13 +21,6 @@ import AuthService from "../../../Service/AuthService";
 import HeaderF5 from "../../Layouts/Header/Header";
 
 const { Header } = Layout;
-
-const items1 = [
-  { key: "/", label: "Cửa hàng" },
-  { key: "/Products", label: "Sản phẩm" },
-  { key: "/contact", label: "Liên hệ" },
-  { key: "/album", label: "Bộ sưu tập" },
-];
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -155,43 +137,11 @@ const Profile = () => {
     setAddresses(updatedAddresses);
     setIsAddressModalVisible(false);
   };
-  const handleLogoutClick = () => {
-    // Xử lý đăng xuất
-    localStorage.removeItem("user");
-    setUsername(null); // Reset lại state username
-    navigate("/"); // Điều hướng tới trang chủ sau khi đăng xuất
-  };
-  const handleProfileClick = () => {
-    const storedUser = localStorage.getItem("user");
-    const user = JSON.parse(storedUser);
-    console.log(user.MaKh);
-    setUsername(user.MaKh);
-    if (user.MaKh) {
-      navigate(`/Profile/${user.MaKh}`);
-    }
-  };
+
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
     setEditingAddress({ ...editingAddress, [name]: value });
   };
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="1" onClick={handleProfileClick}>
-        Thông tin cá nhân
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        danger
-        onClick={handleLogoutClick}
-        icon={<LogoutOutlined />}
-      >
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
 
   return (
     <Layout>

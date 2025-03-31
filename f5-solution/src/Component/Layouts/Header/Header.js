@@ -114,7 +114,7 @@ const HeaderF5 = () => {
         {user ? (
           <div className="relative group text-base font-bold text-primary cursor-pointer">
             Xin chào, {user.TaiKhoan}
-            <div className="absolute top-full hidden group-hover:block rounded-lg overflow-hidden p-1 z-10 text-sm text-[#333] font-normal bg-white border border-[#cecece] drop-shadow-md">
+            <div className="absolute top-full hidden group-hover:block rounded-lg overflow-hidden p-1 z-10 text-xs text-[#333] font-normal bg-white border border-[#cecece] drop-shadow-md">
               <div
                 key="1"
                 onClick={handleProfileClick}

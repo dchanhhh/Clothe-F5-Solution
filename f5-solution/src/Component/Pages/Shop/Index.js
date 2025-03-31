@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import {
-  Layout,
-  Menu,
-  Button,
-  Carousel,
-  Card,
-  Dropdown,
-  Space,
-  Input,
-  message,
-} from "antd";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Layout, Carousel, Card, message } from "antd";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
-import logo_v1 from "../../../assets/images/Logo.png";
 import HomeView from "../../../Service/HomeService";
 import HeaderF5 from "../../Layouts/Header/Header";
 
@@ -42,12 +26,6 @@ const metaStyle = {
   margin: "0",
   padding: "0",
 };
-const items1 = [
-  { key: "/", label: "Cửa hàng" },
-  { key: "/Products", label: "Sản phẩm" },
-  { key: "/contact", label: "Liên hệ" },
-  { key: "/album", label: "Bộ sưu tập" },
-];
 
 const winterProducts = [
   {
@@ -137,54 +115,6 @@ const Home = () => {
     };
     fetchNewProducts();
   }, []);
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-  const handleOncartClick = () => {
-    // Kiểm tra nếu người dùng không đăng nhập
-    const storedUser = JSON.parse(localStorage.getItem("user")); // Parse dữ liệu từ localStorage
-    // Kiểm tra nếu người dùng không đăng nhập
-    if (!storedUser || !storedUser.TaiKhoan) {
-      message.info("Vui lòng đăng nhập để xem giỏ hàng");
-      navigate("/Login");
-    } else {
-      // Điều hướng đến giỏ hàng của người dùng đã đăng nhập
-      navigate(`/cart/${storedUser.TaiKhoan}`);
-    }
-  };
-  const handleLogoutClick = () => {
-    // Xử lý đăng xuất
-    localStorage.removeItem("user");
-    setUsername(null); // Reset lại state username
-    navigate("/"); // Điều hướng tới trang chủ sau khi đăng xuất
-  };
-  const handleProfileClick = () => {
-    const storedUser = localStorage.getItem("user");
-    const user = JSON.parse(storedUser);
-    console.log(user.MaKh);
-    setUsername(user.MaKh);
-    if (user.MaKh) {
-      navigate(`/Profile/${user.MaKh}`);
-    }
-  };
-  const handleMenuClick = ({ key }) => {
-    navigate(key); // Điều hướng đến đường dẫn tương ứng với key
-  };
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="1" onClick={handleProfileClick}>
-        Thông tin cá nhân
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        danger
-        onClick={handleLogoutClick}
-        icon={<LogoutOutlined />}
-      >
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
 
   const handleViewMore = (id) => {
     navigate(`/Products/${id}`);

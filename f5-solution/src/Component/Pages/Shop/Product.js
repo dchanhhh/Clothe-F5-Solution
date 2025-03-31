@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-  LogoutOutlined,
-  AppstoreOutlined,
-} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import {
   Layout,
   Menu,
   Button,
-  Dropdown,
-  Space,
-  Input,
   Breadcrumb,
   Carousel,
   Card,
   message,
   Slider,
 } from "antd";
-import logo_v1 from "../../../assets/images/Logo.png";
 import "./Home.css";
 import "./Product.css";
 import HomeView from "../../../Service/HomeService";
@@ -27,13 +17,6 @@ import HeaderF5 from "../../Layouts/Header/Header";
 
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card;
-
-const items1 = [
-  { key: "/", label: "Cửa hàng" },
-  { key: "/Products", label: "Sản phẩm" },
-  { key: "/contact", label: "Liên hệ" },
-  { key: "/album", label: "Bộ sưu tập" },
-];
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -171,8 +154,6 @@ const ProductPage = () => {
   const endIndex = startIndex + productsPerPage;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
-  const handleLoginClick = () => navigate("/login");
-
   const handleNextPage = () => {
     if (currentPage < Math.ceil(filteredProducts.length / productsPerPage)) {
       setCurrentPage((prevPage) => prevPage + 1);
@@ -182,53 +163,6 @@ const ProductPage = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prevPage) => prevPage - 1);
-    }
-  };
-
-  const handleLogoutClick = () => {
-    localStorage.removeItem("user");
-    setUsername(null);
-    navigate("/");
-  };
-
-  const handleProfileClick = () => {
-    const storedUser = localStorage.getItem("user");
-    const user = JSON.parse(storedUser);
-    if (user.MaKh) {
-      navigate(`/Profile/${user.MaKh}`);
-    }
-  };
-  const handleLayoutClicks = ({ key }) => {
-    navigate(key);
-  };
-
-  const userMenu = (
-    <Menu>
-      <Menu.Item key="1" onClick={handleProfileClick}>
-        Thông tin cá nhân
-      </Menu.Item>
-      <Menu.Item
-        key="2"
-        danger
-        onClick={handleLogoutClick}
-        icon={<LogoutOutlined />}
-      >
-        Đăng xuất
-      </Menu.Item>
-    </Menu>
-  );
-
-  const handleMenuClicks = ({ key }) => {
-    setSelectedCategory(key);
-  };
-
-  const handleOnCartClick = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || !storedUser.TaiKhoan) {
-      message.info("Vui lòng đăng nhập để xem giỏ hàng");
-      navigate("/Login");
-    } else {
-      navigate(`/cart/${storedUser.TaiKhoan}`);
     }
   };
 
