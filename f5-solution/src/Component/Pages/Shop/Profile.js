@@ -146,17 +146,10 @@ const Profile = () => {
   return (
     <Layout>
       <HeaderF5 />
-      <Content
-        style={{
-          margin: "0 10%",
-          minHeight: "100%",
-          background: "#fff",
-          borderRadius: "4px",
-        }}
-      >
-        <h1 style={{ marginTop: "24px", textAlign: "center" }}>
+      <div className="bg-white">
+        <div className="text-2xl font-semibold text-center mt-8">
           THÔNG TIN NGƯỜI DÙNG
-        </h1>
+        </div>
         <Card style={{ maxWidth: "90%", margin: "20px auto", padding: "20px" }}>
           <Row gutter={[16, 16]}>
             <Col span={6} style={{ textAlign: "center" }}>
@@ -277,7 +270,7 @@ const Profile = () => {
             placeholder="Nhập địa chỉ"
           />
         </Modal>
-      </Content>
+      </div>
     </Layout>
   );
 };
