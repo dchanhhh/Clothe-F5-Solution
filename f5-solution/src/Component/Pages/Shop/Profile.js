@@ -1,141 +1,172 @@
 import React, { useState, useEffect } from "react";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import {
-  Layout,
-  Button,
-  Input,
-  Row,
-  Col,
-  Card,
-  Avatar,
-  Form,
-  Modal,
-  message,
-  Select,
-} from "antd";
-import { useNavigate } from "react-router-dom";
-import { Content } from "antd/es/layout/layout";
 import moment from "moment";
 import AdminService from "../../../Service/AdminService";
 import AuthService from "../../../Service/AuthService";
 import HeaderF5 from "../../Layouts/Header/Header";
-
-const { Header } = Layout;
+import DiaChiService from "../../../Service/DiaChiService";
+import AddressFormModal from "./AddressForm";
 
 const Profile = () => {
-  const navigate = useNavigate();
   const [TaiKhoan, setUsername] = useState(null);
   const [userProfile, setUserProfile] = useState({});
   const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
-  const [isEditing, setIsEditing] = useState(true);
-  const [form] = Form.useForm(); // Form instance for handling form data
-  const [MaKh, setMaKhachHang] = useState(null);
+  const [MaKh, setMaKh] = useState(null);
+  const [reloadAddresses, setReloadAddresses] = useState(false);
   const storedUser = localStorage.getItem("user");
   const user = JSON.parse(storedUser);
   const maKh = user.MaKh;
+  const idKh = user.IdKhachhang;
+
+  const handleOpenModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {
+    if (storedUser && maKh) {
+      const user = JSON.parse(storedUser);
+      setUsername(user.TaiKhoan);
+      setMaKh(maKh);
+      fetchData();
+    } else {
+      alert("Không tìm thấy thông tin người dùng.");
+    }
+  }, []);
+
+  const handleSelectAddress = (id) => {
+    const selected = addresses.find((address) => address.id === id);
+
+    if (selected) {
+      const { diaChiChiTiet, phuongXa, quanHuyen, tinhThanh } = selected;
+
+      // Validate the selected address
+      if (!diaChiChiTiet || !phuongXa || !quanHuyen || !tinhThanh) {
+        console.error("Thông tin địa chỉ không đầy đủ:", selected);
+        return;
+      }
+
+      console.log("Selected Address ID:", selected.id);
+      console.log("Selected District Name:", quanHuyen);
+
+      setSelectedAddress(selected); // Update the selected address
+    }
+  };
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      if (maKh) {
+        try {
+          const data = await DiaChiService.getAddressById(idKh);
+          setAddresses(data);
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching address:", error);
+        }
+      }
+    };
+
+    if (reloadAddresses) {
+      fetchAddresses();
+      setReloadAddresses(false);
+    } else {
+      fetchAddresses();
+    }
+  }, [idKh, reloadAddresses]);
+
+  const handleSaveAddress = (address) => {
+    setIsModalVisible(false); // Close the modal after saving the address
+    setReloadAddresses(true); // Set reloadAddresses to true to trigger a re-fetch of the addresses
+  };
+
   const fetchData = async () => {
     try {
-      const data = await AdminService.getKhachHangBymaKH(maKh); // Gọi API với MaKh đã được gán
+      const data = await AdminService.getKhachHangBymaKH(maKh);
+      console.log(data);
       setUserProfile({
         hoVaTenKh: data.hoVaTenKh,
         TaiKhoan: data.TaiKhoan,
         fullName: data.fullName,
         email: data.email,
-        ngaySinh: data.ngaySinh,
+        ngaySinh: moment(data.ngaySinh).format("YYYY-MM-DD"),
         soDienThoai: data.soDienThoai,
-        gioiTinh: data.gioiTinh ? "Nam" : "Nữ", // Giới tính sẽ được chuyển thành chuỗi
+        gioiTinh: data.gioiTinh ? "Nam" : "Nữ",
         avatarUrl:
           data.avatarUrl || "https://www.w3schools.com/howto/img_avatar.png",
       });
-
-      // Đổ dữ liệu vào form
-      form.setFieldsValue({
-        hoVaTenKh: data.hoVaTenKh,
-        gioiTinh: data.gioiTinh ? "Nam" : "Nữ",
-        ngaySinh: moment(data.ngaySinh).format("YYYY-MM-DD"),
-        soDienThoai: data.soDienThoai,
-        email: data.email,
-      });
     } catch (error) {
-      message.error("Lỗi khi lấy thông tin khách hàng.");
-      console.error(error); // In lỗi ra console để dễ dàng debug
+      alert("Lỗi khi lấy thông tin khách hàng.");
+      console.error(error);
     }
   };
 
-  useEffect(() => {
-    if (storedUser) {
-      if (maKh) {
-        const user = JSON.parse(storedUser);
-        setUsername(user.TaiKhoan);
-        setMaKhachHang(maKh); // Cập nhật MaKh vào state
-        fetchData(); // Gọi fetchData sau khi có MaKh
-      } else {
-        message.error(
-          "Không tìm thấy mã khách hàng trong thông tin người dùng."
-        );
-      }
-    } else {
-      message.error("Không tìm thấy thông tin người dùng trong localStorage.");
-    }
-  }, []); // Chỉ chạy một lần khi component mount
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserProfile((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
     try {
       const userValues = {
-        id: values.id,
-        maKh: values.maKh,
-        hoVaTenKh: values.hoVaTenKh,
-        gioiTinh: values.gioiTinh === "Nam", // Chuyển đổi từ chuỗi thành boolean
-        ngaySinh: moment(values.ngaySinh).format("YYYY-MM-DD"),
-        taiKhoan: values.taiKhoan || "string",
-        matKhau: values.matKhau || "string",
-        soDienThoai: values.soDienThoai,
-        email: values.email,
+        hoVaTenKh: form.hoVaTenKh.value,
+        gioiTinh: form.gioiTinh.value === "Nam",
+        ngaySinh: form.ngaySinh.value,
+        taiKhoan: TaiKhoan || "string",
+        matKhau: "string",
+        soDienThoai: form.soDienThoai.value,
+        email: form.email.value,
         trangThai: 0,
+        maKh: MaKh,
       };
 
-      if (isEditing) {
-        await AuthService.registerCustomer(userValues);
-        console.log(userValues);
-        setIsEditing(userValues);
-        form.setFieldsValue({
-          ...userValues,
-          gioiTinh: userValues.gioiTinh ? "Nam" : "Nữ", // Chuyển đổi từ boolean thành chuỗi
-          ngaySinh: moment(userValues.ngaySinh).format("YYYY-MM-DD"),
-        });
-        message.success("Cập nhật khách hàng thành công!");
-      }
+      await AuthService.registerCustomer(userValues);
+      alert("Cập nhật thành công!");
       fetchData();
     } catch (error) {
-      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      alert("Có lỗi xảy ra.");
+      console.error(error);
     }
   };
 
-  const handleAddAddress = () => {
-    setEditingAddress(null);
-    setIsAddressModalVisible(true);
+  const handleDeleteAddress = async (addressId) => {
+    try {
+      await DiaChiService.deleteAddress(addressId);
+      setReloadAddresses(true);
+    } catch (error) {
+      console.error("Lỗi khi xóa địa chỉ:", error);
+    }
   };
 
-  const handleEditAddress = (index) => {
-    setEditingAddress({ index, ...addresses[index] });
-    setIsAddressModalVisible(true);
+  const handleUpdateAddress = async (addressId) => {
+    try {
+      await DiaChiService.updateAddress(addressId);
+      setReloadAddresses(true);
+    } catch (error) {
+      console.error("Lỗi khi sửa địa chỉ:", error);
+    }
   };
 
-  const handleDeleteAddress = (index) => {
-    const updatedAddresses = addresses.filter((_, i) => i !== index);
-    setAddresses(updatedAddresses);
-  };
-
-  const handleAddressModalOk = () => {
-    const updatedAddresses = editingAddress
-      ? addresses.map((addr, index) =>
-          index === editingAddress.index ? editingAddress : addr
-        )
-      : [...addresses, editingAddress];
-    setAddresses(updatedAddresses);
-    setIsAddressModalVisible(false);
+  const handleAddressModalOk = async (addressData) => {
+    try {
+      if (editingAddress && editingAddress.id) {
+        await DiaChiService.updateAddress(editingAddress.id, addressData);
+      } else {
+        await DiaChiService.addAddress(maKh, addressData);
+      }
+      setIsAddressModalVisible(false);
+      setReloadAddresses(true);
+    } catch (error) {
+      console.error("Lỗi khi lưu địa chỉ:", error);
+    }
   };
 
   const handleAddressChange = (e) => {
@@ -144,134 +175,181 @@ const Profile = () => {
   };
 
   return (
-    <Layout>
+    <div className="min-h-screen bg-gray-100">
       <HeaderF5 />
-      <div className="bg-white">
-        <div className="text-2xl font-semibold text-center mt-8">
-          THÔNG TIN NGƯỜI DÙNG
-        </div>
-        <Card style={{ maxWidth: "90%", margin: "20px auto", padding: "20px" }}>
-          <Row gutter={[16, 16]}>
-            <Col span={6} style={{ textAlign: "center" }}>
-              <Avatar size={120} src={userProfile.avatarUrl} />
-            </Col>
-            <Col span={18}>
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={handleFormSubmit}
-                disabled={!isEditing}
-              >
-                <Form.Item
+      <div className="container mx-auto py-10 px-8 flex gap-3">
+        <div className="flex flex-col gap-5 flex-1">
+          <span className="text-2xl font-bold text-center">
+            THÔNG TIN NGƯỜI DÙNG
+          </span>
+          <div className="bg-white p-6 rounded-xl shadow-md flex flex-row gap-8">
+            <img
+              src={userProfile.avatarUrl}
+              className="w-32 h-32 rounded-full object-cover"
+              alt="Avatar"
+            />
+            <form
+              onSubmit={handleFormSubmit}
+              className="flex flex-col gap-4 w-full"
+            >
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold">Họ và tên</span>
+                <input
+                  className="px-2.5 rounded"
                   name="hoVaTenKh"
-                  label="Họ và Tên"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập họ và tên!" },
-                  ]}
-                >
-                  <Input placeholder="Nhập họ và tên" />
-                </Form.Item>
-                <Form.Item
+                  value={userProfile.hoVaTenKh}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold">Giới tính</span>
+                <select
+                  className="px-2.5 rounded"
                   name="gioiTinh"
-                  label="Giới Tính"
-                  rules={[
-                    { required: true, message: "Vui lòng chọn giới tính!" },
-                  ]}
+                  value={userProfile.gioiTinh}
+                  onChange={handleChange}
+                  required
                 >
-                  <Select placeholder="Chọn giới tính">
-                    <Select.Option value="Nam">Nam</Select.Option>
-                    <Select.Option value="Nữ">Nữ</Select.Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item
+                  <option value="">Chọn giới tính</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold">Ngày sinh</span>
+                <input
+                  className="px-2.5 rounded"
+                  type="date"
                   name="ngaySinh"
-                  label="Ngày Sinh"
-                  rules={[{ required: false }]}
-                >
-                  <Input type="date" placeholder="Chọn ngày sinh" />
-                </Form.Item>
-                <Form.Item
+                  value={userProfile.ngaySinh}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold">Số điện thoại</span>
+                <input
+                  className="px-2.5 rounded"
+                  type="number"
                   name="soDienThoai"
-                  label="Số Điện Thoại"
-                  rules={[
-                    {
-                      required: false,
-                      message: "Vui lòng nhập số điện thoại!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Nhập số điện thoại" />
-                </Form.Item>
-                <Form.Item
+                  size="10"
+                  value={userProfile.soDienThoai}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold">Email</span>
+                <input
+                  type="email"
+                  className="px-2.5 rounded"
                   name="email"
-                  label="Email"
-                  rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+                  value={userProfile.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-primary text-center text-white font-bold py-3 rounded hover:bg-primary/80 hover:scale-100 m-0"
+              >
+                Cập nhật
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-5 flex-1">
+          <span className="text-2xl font-bold text-center">
+            ĐỊA CHỈ NGƯỜI DÙNG
+          </span>
+          <div className="bg-white p-6 rounded-xl shadow-md flex flex-col gap-4 max-h-[470px] overflow-y-auto">
+            <div className="py-2.5">
+              <span
+                className="text-white px-3 py-2 bg-green-600 rounded hover:bg-green-700 cursor-pointer"
+                onClick={handleOpenModal}
+              >
+                Thêm địa chỉ
+              </span>
+            </div>
+            {addresses.length > 0 && (
+              <div className="flex flex-col gap-4">
+                {addresses.map((address) => (
+                  <div
+                    key={address.id}
+                    className="flex justify-between items-center gap-2 bg-gray-200 p-2.5 rounded-xl"
+                    onClick={() => handleSelectAddress(address.id)}
+                  >
+                    <span className="text-primary font-semibold text-base line-clamp-1">
+                      {address.diaChiChiTiet &&
+                      address.phuongXa &&
+                      address.quanHuyen &&
+                      address.tinhThanh ? (
+                        `${address.diaChiChiTiet}, ${address.phuongXa}, ${address.quanHuyen}, ${address.tinhThanh}`
+                      ) : (
+                        <span className="text-red-500 font-semibold">
+                          Địa chỉ không hợp lệ, vui lòng sửa lại!
+                        </span>
+                      )}
+                    </span>
+                    <div className="flex gap-1">
+                      <div
+                        className="bg-primary py-1 px-3 text-white font-semibold text-sm rounded-lg cursor-pointer"
+                        onClick={() => handleUpdateAddress(address.id)}
+                      >
+                        Sửa
+                      </div>
+                      <div
+                        className="bg-red-500 py-1 px-3 text-white font-semibold text-sm rounded-lg cursor-pointer"
+                        onClick={() => handleDeleteAddress(address.id)}
+                      >
+                        Xóa
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <AddressFormModal
+              visible={isModalVisible}
+              onClose={handleCloseModal}
+              onSave={handleSaveAddress}
+            />
+          </div>
+        </div>
+
+        {/* Modal đơn giản */}
+        {isAddressModalVisible && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="flex flex-col gap-4 bg-white p-6 rounded-lg w-[450px]">
+              <span className="text-xl font-semibold">Chỉnh sửa địa chỉ</span>
+              <input
+                type="text"
+                name="address"
+                value={editingAddress?.address || ""}
+                onChange={handleAddressChange}
+                className="w-full border px-3 py-2 rounded"
+              />
+              <div className="flex justify-end space-x-2">
+                <div
+                  className="bg-[#444444] hover:bg-[#333333] px-3.5 py-2 rounded text-white text-sm cursor-pointer"
+                  onClick={() => setIsAddressModalVisible(false)}
                 >
-                  <Input type="email" placeholder="Nhập email" />
-                </Form.Item>
-                <Button type="primary" htmlType="submit">
-                  {isEditing ? "Cập nhật" : "Chỉnh sửa"}
-                </Button>
-              </Form>
-            </Col>
-          </Row>
-        </Card>
-
-        {/* CRUD Address Section */}
-        <h2 style={{ marginTop: "24px", textAlign: "center" }}>
-          ĐỊA CHỈ NGƯỜI DÙNG
-        </h2>
-        <Card style={{ maxWidth: "90%", margin: "20px auto", padding: "20px" }}>
-          <Button
-            type="primary"
-            onClick={handleAddAddress}
-            style={{ marginBottom: "20px" }}
-          >
-            Thêm Địa Chỉ
-          </Button>
-          {addresses.map((address, index) => (
-            <Card key={index} style={{ marginBottom: "10px" }}>
-              <Row justify="space-between">
-                <Col span={18}>
-                  <div>{address.address}</div>
-                </Col>
-                <Col span={6} style={{ textAlign: "right" }}>
-                  <Button
-                    onClick={() => handleEditAddress(index)}
-                    icon={<EditOutlined />}
-                    style={{ marginRight: "8px" }}
-                  >
-                    Chỉnh sửa
-                  </Button>
-                  <Button
-                    danger
-                    onClick={() => handleDeleteAddress(index)}
-                    icon={<DeleteOutlined />}
-                  >
-                    Xóa
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
-          ))}
-        </Card>
-
-        {/* Address Modal */}
-        <Modal
-          title="Chỉnh sửa địa chỉ"
-          visible={isAddressModalVisible}
-          onCancel={() => setIsAddressModalVisible(false)}
-          onOk={handleAddressModalOk}
-        >
-          <Input
-            name="address"
-            value={editingAddress?.address || ""}
-            onChange={handleAddressChange}
-            placeholder="Nhập địa chỉ"
-          />
-        </Modal>
+                  Hủy
+                </div>
+                <div
+                  className="bg-primary hover:bg-primary/90 px-3.5 py-2 rounded text-white text-sm cursor-pointer"
+                  onClick={handleAddressModalOk}
+                >
+                  Lưu
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </Layout>
+    </div>
   );
 };
 
