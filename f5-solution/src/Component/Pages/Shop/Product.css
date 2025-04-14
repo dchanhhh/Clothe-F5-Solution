@@ -1,47 +1,76 @@
 .product-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
 }
 
 .product-header h2 {
-    margin: 0;
-    font-size: 24px;
+  margin: 0;
+  font-size: 24px;
 }
 
 .filters {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .filter-item {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Adjust the gap between label and dropdown */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adjust the gap between label and dropdown */
 }
 
 .filter-item label {
-    margin: 0;
-    font-size: 14px;
-    width: 80px; /* Adjust the width as needed */
-    text-align: right; /* Aligns the label text to the right */
+  margin: 0;
+  font-size: 14px;
+  width: 80px; /* Adjust the width as needed */
+  text-align: right; /* Aligns the label text to the right */
 }
 
 .filter-item select {
-    padding: 8px;
-    font-size: 14px;
+  padding: 8px;
+  font-size: 14px;
 }
 /* Cập nhật các thẻ p để có chữ to hơn và đậm hơn */
 .product-info p {
-    font-weight: bold; /* Làm cho chữ đậm hơn */
-    font-size: 400px; /* Tăng kích thước chữ */
+  font-weight: bold; /* Làm cho chữ đậm hơn */
+  font-size: 400px; /* Tăng kích thước chữ */
 }
 
 /* Cập nhật cho chữ "Giá" để thêm màu đỏ và làm đậm */
 .product-info .price {
-    color: red;
-    font-weight: bold;
-    font-size: 24px; /* Làm chữ "Giá" to hơn so với các thông tin khác */
+  color: red;
+  font-weight: bold;
+  font-size: 24px; /* Làm chữ "Giá" to hơn so với các thông tin khác */
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.swiper-pagination-bullet {
+  width: 40px;
+  border-radius: 10px;
+  height: 4px;
 }

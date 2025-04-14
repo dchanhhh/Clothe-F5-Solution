@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Layout,
-  Menu,
-  Button,
-  Breadcrumb,
-  Carousel,
-  Card,
-  message,
-  Slider,
-} from "antd";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "./Product.css";
+import { Layout, Button, Card, message, Slider } from "antd";
 import "./Home.css";
 import "./Product.css";
 import HomeView from "../../../Service/HomeService";
 import HeaderF5 from "../../Layouts/Header/Header";
-
-const { Header, Content, Sider } = Layout;
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 const { Meta } = Card;
 
 const ProductPage = () => {
@@ -30,9 +25,14 @@ const ProductPage = () => {
   const [selectedColor, setSelectedColor] = useState("all");
   const [selectedPrice, setSelectedPrice] = useState([0, 1000000]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [showSubMenu, setShowSubMenu] = useState();
   // const [selectedHomeView, setSelectedHome] = useState('all');
   const productsPerPage = 8;
+
+  const handleShowSubMenu = (mainMenu) => {
+    setShowSubMenu((prev) => (prev === mainMenu ? null : mainMenu));
+  };
 
   useEffect(() => {
     const fetchNewProducts = async () => {
@@ -98,7 +98,7 @@ const ProductPage = () => {
           (detail) => detail.size?.tenSize === selectedSize
         );
       const matchesCategory =
-        selectedCategory === "all" ||
+        selectedCategory === "Tất cả" ||
         (product.danhMuc && product.danhMuc.tenDanhMuc === selectedCategory);
       const matchesPrice =
         product.giaBan >= selectedPrice[0] &&
@@ -173,68 +173,112 @@ const ProductPage = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <HeaderF5 />
-      <Breadcrumb style={{ marginLeft: "20%" }}>
-        <Breadcrumb.Item>Sản phẩm</Breadcrumb.Item>
-        <Breadcrumb.Item>{selectedCategory}</Breadcrumb.Item>
-      </Breadcrumb>
-      <Carousel autoplay>
-        <div>
+      <Swiper
+        className="mySwiper"
+        pagination={{
+          clickable: true,
+        }}
+        navigation={true}
+        loop={true}
+        modules={[Autoplay, Pagination, Navigation]}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+        }}
+      >
+        <SwiperSlide>
           <img
             src="https://file.hstatic.net/200000182297/file/1920x500_1419eff661374b32aa624729627c58ad.jpg"
             alt="Banner 1"
-            style={{ width: "100%" }}
           />
-        </div>
-      </Carousel>
-      <Layout>
-        <Sider width={300} className="site-layout-background">
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["all"]}
-            style={{ height: "100%", borderRight: 0 }}
-          >
-            <Menu.Item key="all" onClick={() => setSelectedCategory("all")}>
+        </SwiperSlide>
+        <SwiperSlide>
+          <img
+            src="https://file.hstatic.net/200000182297/file/1__6__fd5e31ae0d5e4499ab07ac9f2f20c8ba.png"
+            alt="Banner 2"
+          />
+        </SwiperSlide>
+        <SwiperSlide>
+          <img
+            src="https://file.hstatic.net/200000182297/file/1__3__df515d83dc2d438d8de83a85246be9d3.png"
+            alt="Banner 3"
+          />
+        </SwiperSlide>
+        <SwiperSlide>
+          <img
+            src="https://file.hstatic.net/200000182297/file/1__7__eb2ace13e5f64d68a9853828b7ab2e73.png"
+            alt="Banner 4"
+          />
+        </SwiperSlide>
+      </Swiper>
+      {/* <div className="flex gap-1 p-4">
+        <span>Sản phẩm</span>
+        <span>/</span>
+        <span>{selectedCategory}</span>
+      </div> */}
+      <div className="flex gap-5 justify-between px-4 py-5">
+        <div className="w-1/5 h-full p-4 bg-white rounded-xl">
+          <div className="flex flex-col gap-2">
+            <div
+              className={`cursor-pointer p-2 rounded-lg hover:bg-[#ffe6e6] font-semibold ${
+                selectedCategory === "Tất cả" ? "bg-[#ffc5c5]" : ""
+              }`}
+              onClick={() => setSelectedCategory("Tất cả")}
+            >
               Tất cả
-            </Menu.Item>
-
+            </div>
             {Object.keys(categories).map((group) => (
-              <React.Fragment key={group}>
-                <Menu.SubMenu key={group} title={group}>
-                  {categories[group].map((category) => (
-                    <Menu.Item
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category || "Danh mục không xác định"}
-                    </Menu.Item>
-                  ))}
-                </Menu.SubMenu>
-              </React.Fragment>
+              <div key={group}>
+                <div
+                  className="flex justify-between items-center rounded-lg p-2 text-gray-700 font-bold cursor-pointer hover:bg-[#ffe6e6]"
+                  onClick={() => handleShowSubMenu(group)}
+                >
+                  <span>{group}</span>
+                  <span className="text-base">
+                    {showSubMenu === group ? (
+                      <IoMdArrowDropdown size={20} />
+                    ) : (
+                      <IoMdArrowDropup size={20} />
+                    )}
+                  </span>
+                </div>
+                {showSubMenu === group && (
+                  <div className="space-y-1 pl-2">
+                    {categories[group].map((category) => (
+                      <div
+                        key={category}
+                        className={`cursor-pointer p-2 rounded hover:bg-[#ffe6e6] ${
+                          selectedCategory === category
+                            ? "bg-[#ffc5c5] font-semibold"
+                            : ""
+                        }`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category || "Danh mục không xác định"}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
-          </Menu>
-        </Sider>
-        <Content
-          style={{
-            padding: 24,
-            margin: 0,
-            minHeight: 280,
-            background: "#fff",
-            borderRadius: "4px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <div className="product-header">
-            <h2>TẤT CẢ SẢN PHẨM</h2>
-            <div className="filters">
-              <div className="filter-item">
-                <label htmlFor="color">Color:</label>
+          </div>
+        </div>
+        <div className="flex flex-col p-5 bg-white rounded-xl w-4/5">
+          <div className="flex pb-5 items-center justify-between">
+            <span className="text-2xl font-bold">TẤT CẢ SẢN PHẨM</span>
+            <div className="flex gap-4 items-center">
+              <div className="flex items-center gap-3">
+                <span className="whitespace-nowrap font-semibold">
+                  Màu sắc:
+                </span>
                 <select
                   id="color"
                   name="color"
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
+                  className="pr-3"
                 >
-                  <option value="all">All Colors</option>
+                  <option value="all">Tất cả</option>
                   {colors.map((color) => (
                     <option key={color} value={color}>
                       {color}
@@ -242,15 +286,18 @@ const ProductPage = () => {
                   ))}
                 </select>
               </div>
-              <div className="filter-item">
-                <label htmlFor="size">Size:</label>
+              <div className="flex items-center gap-3">
+                <span className="whitespace-nowrap font-semibold">
+                  Kích cỡ:
+                </span>
                 <select
                   id="size"
                   name="size"
                   value={selectedSize}
                   onChange={(e) => setSelectedSize(e.target.value)}
+                  className="pr-3"
                 >
-                  <option value="all">All Sizes</option>
+                  <option value="all">Tất cả</option>
                   {sizes.map((size) => (
                     <option key={size} value={size}>
                       {size}
@@ -258,8 +305,10 @@ const ProductPage = () => {
                   ))}
                 </select>
               </div>
-              <div className="filter-item">
-                <label htmlFor="price">Price:</label>
+              <div className="flex items-center gap-3">
+                <span className="whitespace-nowrap font-semibold">
+                  Giá bán:
+                </span>
                 <Slider
                   range
                   min={0}
@@ -274,42 +323,21 @@ const ProductPage = () => {
               </div>
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "start",
-              gap: "16px",
-            }}
-          >
+          <div className="grid grid-cols-4 gap-5">
             {currentProducts.map((product) => (
               <div
                 key={product.id}
-                style={{
-                  flex: "0 0 calc(25% - 16px)",
-                  boxSizing: "border-box",
-                }}
-                className="product-card"
+                className="product-card relative col-span-1 bg-white rounded-xl border-2 border-gray-200"
               >
-                <Card
-                  hoverable
-                  cover={
-                    <img
-                      alt={product.tenSp}
-                      src={product.imageDefaul}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  }
-                >
-                  <Meta
-                    title={product.tenSp}
-                    description={`${product.giaBan.toLocaleString()} VNĐ`}
-                  />
-                </Card>
+                <img
+                  alt={product.tenSp}
+                  src={product.imageDefaul}
+                  className="w-full h-full object-cover"
+                />
+                <div className="flex flex-col gap-2 p-3 items-center border-t border-t-gray-200">
+                  <span className="text-base font-bold">{product.tenSp}</span>
+                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
+                </div>
                 <div className="overlay">
                   <button
                     className="view-more-button"
@@ -321,31 +349,37 @@ const ProductPage = () => {
               </div>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <Button
+          <div className="flex gap-4 items-center justify-center pt-4">
+            <button
               disabled={currentPage === 1}
               onClick={handlePreviousPage}
-              style={{ marginRight: "10px" }}
+              className={`m-0 text-sm font-medium p-2 ${
+                currentPage === 1 && "text-[#9f9f9f] pointer-events-none"
+              }`}
             >
               Trang trước
-            </Button>
+            </button>
             <span>
               Trang {currentPage} /{" "}
               {Math.ceil(filteredProducts.length / productsPerPage)}
             </span>
-            <Button
+            <button
               disabled={
                 currentPage ===
                 Math.ceil(filteredProducts.length / productsPerPage)
               }
               onClick={handleNextPage}
-              style={{ marginLeft: "10px" }}
+              className={`m-0 text-sm font-medium p-2 ${
+                currentPage ===
+                  Math.ceil(filteredProducts.length / productsPerPage) &&
+                "text-[#9f9f9f] pointer-events-none"
+              }`}
             >
               Trang sau
-            </Button>
+            </button>
           </div>
-        </Content>
-      </Layout>
+        </div>
+      </div>
     </Layout>
   );
 };
