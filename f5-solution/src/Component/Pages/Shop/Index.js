@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import HomeView from "../../../Service/HomeService";
 import HeaderF5 from "../../Layouts/Header/Header";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { Meta } = Card;
 
 const cardStyle = {
@@ -102,6 +104,7 @@ const Home = () => {
       setUsername(user.TaiKhoan);
     }
   }, []);
+
   useEffect(() => {
     const fetchNewProducts = async () => {
       try {
@@ -122,185 +125,212 @@ const Home = () => {
   return (
     <>
       <HeaderF5 />
-      <Content style={{ padding: "0 48px" }}>
-        <Layout style={{ padding: "24px 0" }}>
-          <Content style={{ padding: "0 24px", minHeight: 280 }}>
-            {/* Carousel cho khuyến mãi */}
-            <Carousel autoplay>
-              <div>
-                <img
-                  src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img2_master.jpg?v=1633"
-                  alt="Banner 1"
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div>
-                <img
-                  src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img1_master.jpg?v=1523"
-                  alt="Banner 2"
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div>
-                <img
-                  src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img2_master.jpg?v=1523"
-                  alt="Banner 2"
-                  style={{ width: "100%" }}
-                />
-              </div>
-            </Carousel>
+      <div className="flex flex-col gap-6 p-6 bg-[#f5f5f5]">
+        <Swiper
+          className="mySwiper rounded-xl"
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          loop={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+        >
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img1_master.jpg?v=1633"
+              alt="Banner 1"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img2_master.jpg?v=1633"
+              alt="Banner 2"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img3_master.jpg?v=1633"
+              alt="Banner 3"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img4_master.jpg?v=1633"
+              alt="Banner 4"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img2_master.jpg?v=1927"
+              alt="Banner 5"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/hb_image1_master.jpg?v=1927"
+              alt="Banner 6"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/hb_image2_master.jpg?v=1927"
+              alt="Banner 7"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img1_master.jpg?v=1523"
+              alt="Banner 8"
+            />
+          </SwiperSlide>
+        </Swiper>
 
-            {/* Hàng sản phẩm nổi bật */}
-            <h1 style={{ marginTop: "24px", textAlign: "center" }}>
-              SẢN PHẨM MỚI
-            </h1>
-            <Carousel
-              autoplay
-              slidesToShow={5}
-              dots={false}
-              style={{ margin: "0 5%" }}
-            >
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  style={{ padding: "0 10px" }}
-                  className="product-card"
-                >
-                  <Card
-                    hoverable
-                    cover={
-                      <img
-                        alt={product.tenSp}
-                        src={product.imageDefaul}
-                        style={{
-                          width: "100%",
-                          objectFit: "contain",
-                          height: "auto",
-                        }}
-                      />
-                    }
-                  >
-                    <Meta
-                      title={product.tenSp}
-                      description={`${product.giaBan.toLocaleString()} VNĐ`}
+        <div className="flex flex-col gap-6">
+          <span className="text-2xl text-center font-bold">SẢN PHẨM MỚI</span>
+          <Carousel autoplay slidesToShow={5} dots={false}>
+            {products.map((product) => (
+              <div
+                key={product.id}
+                style={{ padding: "0 10px" }}
+                className="product-card"
+              >
+                <Card
+                  hoverable
+                  cover={
+                    <img
+                      alt={product.tenSp}
+                      src={product.imageDefaul}
+                      style={{
+                        width: "100%",
+                        objectFit: "contain",
+                        height: "auto",
+                      }}
                     />
-                  </Card>
-                  {/* Lớp phủ khi hover */}
-                  <div className="overlay">
-                    <button
-                      className="view-more-button"
-                      onClick={() => handleViewMore(product.id)}
-                    >
-                      Xem thêm
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </Carousel>
-
-            {/* Adjusted space for Banner 3 */}
-            <div style={{ margin: "40px 0" }}>
-              <Carousel autoplay>
-                <div>
-                  <img
-                    src="https://media.canifa.com/Simiconnector/BannerSlider/a/o/aogio_topbanner_desktop-12aug.webp"
-                    alt="Banner 3"
-                    style={{ width: "100%" }}
+                  }
+                >
+                  <Meta
+                    title={product.tenSp}
+                    description={`${product.giaBan.toLocaleString()} VNĐ`}
                   />
+                </Card>
+                {/* Lớp phủ khi hover */}
+                <div className="overlay">
+                  <button
+                    className="view-more-button"
+                    onClick={() => handleViewMore(product.id)}
+                  >
+                    Xem thêm
+                  </button>
                 </div>
-              </Carousel>
+              </div>
+            ))}
+          </Carousel>
+        </div>
+
+        {/* Adjusted space for Banner 3 */}
+        <div style={{ margin: "40px 0" }}>
+          <Carousel autoplay>
+            <div>
+              <img
+                src="https://media.canifa.com/Simiconnector/BannerSlider/a/o/aogio_topbanner_desktop-12aug.webp"
+                alt="Banner 3"
+                style={{ width: "100%" }}
+              />
             </div>
+          </Carousel>
+        </div>
 
-            {/* Hàng đồ đông mới */}
-            <h1 style={{ marginTop: "24px", textAlign: "center" }}>
-              ĐỒ ĐÔNG MỚI
-            </h1>
-            <Carousel
-              autoplay
-              slidesToShow={5}
-              dots={false}
-              style={{ margin: "0 5%" }}
+        {/* Hàng đồ đông mới */}
+        <h1 style={{ marginTop: "24px", textAlign: "center" }}>ĐỒ ĐÔNG MỚI</h1>
+        <Carousel
+          autoplay
+          slidesToShow={5}
+          dots={false}
+          style={{ margin: "0 5%" }}
+        >
+          {winterProducts.map((product) => (
+            <div
+              key={product.wid}
+              style={{ padding: "0 10px" }}
+              className="product-card"
             >
-              {winterProducts.map((product) => (
-                <div
-                  key={product.wid}
-                  style={{ padding: "0 10px" }}
-                  className="product-card"
-                >
-                  <Card
-                    hoverable
-                    cover={
-                      <img
-                        alt={product.title}
-                        src={product.imgSrc}
-                        style={{
-                          width: "100%",
-                          objectFit: "contain",
-                          height: "auto",
-                        }}
-                      />
-                    }
-                  >
-                    <Meta
-                      title={product.title}
-                      description={product.description}
-                    />
-                  </Card>
-                  {/* Lớp phủ khi hover */}
-                  <div className="overlay">
-                    <button className="view-more-button">Xem thêm</button>
-                  </div>
-                </div>
-              ))}
-            </Carousel>
+              <Card
+                hoverable
+                cover={
+                  <img
+                    alt={product.title}
+                    src={product.imgSrc}
+                    style={{
+                      width: "100%",
+                      objectFit: "contain",
+                      height: "auto",
+                    }}
+                  />
+                }
+              >
+                <Meta title={product.title} description={product.description} />
+              </Card>
+              {/* Lớp phủ khi hover */}
+              <div className="overlay">
+                <button className="view-more-button">Xem thêm</button>
+              </div>
+            </div>
+          ))}
+        </Carousel>
 
-            {/* F5 BLOG */}
-            <h1
-              style={{
-                marginTop: "24px",
-                textAlign: "center",
-                fontFamily: "gmv_din_pro-bold !important",
-              }}
-            >
-              F5 BLOG
-            </h1>
-            <h3
-              className="text-white"
-              style={{ marginTop: "5px", textAlign: "center" }}
-            >
-              ĐÓN ĐẦU XU HƯỚNG, ĐỊNH HÌNH PHONG CÁCH
-            </h3>
-            <Carousel
-              autoplay
-              slidesToShow={3}
-              dots={false}
-              style={{ margin: "0 20%", marginTop: "3%" }}
-            >
-              {f5Blogs.map((blog) => (
-                <div key={blog.fid} style={{ padding: "0 10px" }}>
-                  <Card
-                    hoverable
-                    style={cardStyle}
-                    cover={
-                      <img
-                        alt={blog.title}
-                        src={blog.imgSrc}
-                        style={imgStyle}
-                      />
-                    }
-                  >
-                    <Meta
-                      title={blog.title}
-                      description={blog.description}
-                      style={metaStyle}
-                    />
-                  </Card>
-                </div>
-              ))}
-            </Carousel>
-          </Content>
-        </Layout>
-      </Content>
+        {/* F5 BLOG */}
+        <h1
+          style={{
+            marginTop: "24px",
+            textAlign: "center",
+            fontFamily: "gmv_din_pro-bold !important",
+          }}
+        >
+          F5 BLOG
+        </h1>
+        <h3
+          className="text-white"
+          style={{ marginTop: "5px", textAlign: "center" }}
+        >
+          ĐÓN ĐẦU XU HƯỚNG, ĐỊNH HÌNH PHONG CÁCH
+        </h3>
+        <Carousel
+          autoplay
+          slidesToShow={3}
+          dots={false}
+          style={{ margin: "0 20%", marginTop: "3%" }}
+        >
+          {f5Blogs.map((blog) => (
+            <div key={blog.fid} style={{ padding: "0 10px" }}>
+              <Card
+                hoverable
+                style={cardStyle}
+                cover={
+                  <img alt={blog.title} src={blog.imgSrc} style={imgStyle} />
+                }
+              >
+                <Meta
+                  title={blog.title}
+                  description={blog.description}
+                  style={metaStyle}
+                />
+              </Card>
+            </div>
+          ))}
+        </Carousel>
+      </div>
     </>
   );
 };
