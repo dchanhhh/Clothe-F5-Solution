@@ -11,6 +11,7 @@ import {
   notification,
 } from "antd";
 import { CheckOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import { FaCheck } from "react-icons/fa6";
 import "./Home.css";
 import { Content } from "antd/es/layout/layout";
 import HomeView from "../../../Service/HomeService";
@@ -393,166 +394,153 @@ const ProductDetail = () => {
   return (
     <Layout>
       <HeaderF5 />
-
       <Content>
         <Layout>
-          <div
-            style={{ padding: "10px", marginLeft: "15%", marginRight: "15%" }}
-          >
-            <Row gutter={16}>
-              <Col
-                span={4}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0",
-                }}
-              >
-                {product?.images
-                  ?.slice(startIndex, startIndex + visibleImages)
-                  .map((img) => (
-                    <img
-                      key={img.id}
-                      src={img.tenImage}
-                      alt={product.tenSp}
-                      style={{
-                        maxWidth: "87%",
-                        maxHeight: "87%",
-                        cursor: "pointer",
-                        border:
-                          mainImage === img.tenImage
-                            ? "2px solid #1890ff"
-                            : "1px solid #ddd",
-                      }}
-                      onClick={() => setMainImage(img.tenImage)}
-                    />
-                  ))}
-              </Col>
+          <div className="p-3 mx-[12%]">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-2 max-h-[600px] overflow-y-auto">
+                <div className="flex flex-col gap-2 items-center justify-center mr-1">
+                  <img
+                    className="cursor-pointer object-cover"
+                    src={product?.imageDefaul}
+                    alt={product?.tenSp}
+                    style={{
+                      border:
+                        mainImage === product?.imageDefaul
+                          ? "2px solid #1890ff"
+                          : "1px solid #ddd",
+                    }}
+                    onClick={() => setMainImage(product?.imageDefaul)}
+                  />
+                  {product?.images
+                    ?.slice(startIndex, startIndex + visibleImages)
+                    .map((img) => (
+                      <img
+                        className="cursor-pointer object-cover"
+                        key={img.id}
+                        src={img.tenImage}
+                        alt={product.tenSp}
+                        style={{
+                          border:
+                            mainImage === img.tenImage
+                              ? "2px solid #1890ff"
+                              : "1px solid #ddd",
+                        }}
+                        onClick={() => setMainImage(img.tenImage)}
+                      />
+                    ))}
+                </div>
+              </div>
 
-              <Col span={10}>
+              <div className="col-span-4 border border-gray-300">
                 <img
                   src={mainImage}
                   alt={product?.tenSp || ""}
-                  style={{
-                    width: "100%",
-                    maxHeight: "100%",
-                    objectFit: "cover",
-                  }}
+                  className="w-full h-full object-cover"
                 />
-              </Col>
-              <Col span={10}>
-                <h2 style={{ margin: "15px", fontWeight: 500 }}>
+              </div>
+              <div className="col-span-6 flex flex-col justify-center gap-4 p-4">
+                <div className="text-2xl font-bold uppercase text-center">
                   {product?.tenSp || "Tên sản phẩm"}
-                </h2>
-                <p style={{ margin: "15px", fontWeight: 500 }}>
+                </div>
+                <div className="text-base font-medium">
                   Mã sản phẩm: {product?.maSp || ""}
-                </p>
-                <p
-                  style={{
-                    margin: "0px 0px 0px 15px",
-                    fontWeight: 500,
-                    fontSize: "25px",
-                  }}
-                >
-                  Giá bán:{" "}
-                  <span style={{ color: "red" }}>
-                    {product?.giaBan.toLocaleString() || 0}
-                  </span>{" "}
-                  VND
-                </p>
-                <p style={{ margin: "15px", fontWeight: 500 }}>
+                </div>
+                <div className="flex gap-2 items-center text-2xl font-semibold">
+                  <span>Giá:</span>
+                  <span className="text-[#FF0000]">
+                    {product?.giaBan.toLocaleString() || 0} VNĐ
+                  </span>
+                </div>
+                <span className="text-base font-medium">
                   Chất liệu: {product?.chatLieu?.tenChatLieu || "Không rõ"}
-                </p>
-                <div className="product-detail">
+                </span>
+                <div className="flex flex-col gap-4">
                   {product && (
                     <>
-                      <p>Màu sắc:</p>
-                      <div className="color-options">
-                        {uniqueColors.map((mauSac, index) => (
-                          <Button
-                            key={mauSac.mauSacId}
-                            className={`color-button ${
-                              selectedColor === mauSac.mauSacId
-                                ? "selected"
-                                : ""
-                            }`}
-                            style={{ backgroundColor: mauSac.mauSacTen }}
-                            onClick={() => handleSelectColor(mauSac)}
-                          >
-                            {selectedColor === mauSac.mauSacId && (
-                              <CheckOutlined />
-                            )}
-                          </Button>
-                        ))}
+                      <div className="flex flex-col gap-2">
+                        <span className="text-base font-semibold">
+                          Màu sắc:
+                        </span>
+                        <div className="flex gap-2">
+                          {uniqueColors.map((mauSac, index) => (
+                            <div
+                              key={mauSac.mauSacId}
+                              className={`relative w-10 h-10 rounded-full text-center cursor-pointer ${
+                                selectedColor === mauSac.mauSacId
+                                  ? "border-2 border-black"
+                                  : "border border-[#ddd]"
+                              }`}
+                              style={{ backgroundColor: mauSac.mauSacTen }}
+                              onClick={() => handleSelectColor(mauSac)}
+                            >
+                              {selectedColor === mauSac.mauSacId && (
+                                <FaCheck className="absolute top-3 right-[11px]" />
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
-                      <div
-                        className="size-options"
-                        style={{ marginTop: "20px" }}
-                      >
-                        <p>Size:</p>
-                        {availableSizes.map((size) => (
-                          <Button
-                            key={size.sizeId}
-                            style={{
-                              marginRight: "10px",
-                              border:
+                      <div className="flex flex-col gap-2">
+                        <span className="text-base font-semibold">Size:</span>
+                        <div className="flex gap-2">
+                          {availableSizes.map((size) => (
+                            <div
+                              key={size.sizeId}
+                              className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer ${
                                 selectedSize === size.sizeId
-                                  ? "2px solid black"
-                                  : "1px solid #ddd",
-                            }}
-                            onClick={() => handleSelectSize(size.sizeId)}
-                          >
-                            {size.sizeTen}
-                          </Button>
-                        ))}
+                                  ? "border-2 border-black"
+                                  : "border border-[#ddd]"
+                              }`}
+                              onClick={() => handleSelectSize(size.sizeId)}
+                            >
+                              <span className="text-base font-semibold">
+                                {size.sizeTen}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   )}
                 </div>
 
-                <p style={{ margin: "15px", fontWeight: 500 }}>
-                  Số lượng trong kho: {soLuong}
-                </p>
-                <div
-                  style={{
-                    margin: "15px",
-                    fontWeight: 500,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Button onClick={decreaseQuantity} disabled={quantity <= 1}>
+                <div className="flex gap-2 items-center">
+                  <span className="text-base font-semibold">
+                    Số lượng trong kho:
+                  </span>
+                  <span className="text-base font-bold text-primary">
+                    {soLuong}
+                  </span>
+                </div>
+
+                <div className="flex gap-2 items-center">
+                  <button onClick={decreaseQuantity} disabled={quantity <= 1}>
                     <MinusOutlined />
-                  </Button>
+                  </button>
                   <span style={{ padding: "0 15px", fontWeight: 500 }}>
                     {quantity}
                   </span>
-                  <Button onClick={increaseQuantity}>
+                  <button onClick={increaseQuantity}>
                     <PlusOutlined />
-                  </Button>
+                  </button>
                 </div>
 
-                <Button type="primary" onClick={handleAddToCart}>
+                <div
+                  className="outline-none bg-black text-white text-base text-center font-semibold rounded-lg py-2 cursor-pointer hover:scale-105"
+                  onClick={handleAddToCart}
+                >
                   Thêm vào giỏ hàng
-                </Button>
-                <Button
-                  style={{
-                    backgroundColor: "white",
-                    color: "black",
-                    border: "1px solid black",
-                    width: "100%",
-                    height: "40px",
-                    fontSize: "16px",
-                  }}
+                </div>
+                <div
+                  className="bg-primary text-white py-2 font-semibold text-base rounded-lg outline-none text-center cursor-pointer hover:scale-105"
                   onClick={handleBuyNow}
                 >
                   Mua ngay
-                </Button>
-              </Col>
-            </Row>
+                </div>
+              </div>
+            </div>
             <h1
               style={{
                 marginTop: "3%",
