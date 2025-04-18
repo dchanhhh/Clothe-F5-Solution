@@ -61,7 +61,14 @@ const winterProducts = [
   {
     wid: 5,
     title: "MĂNG TÔ VAI CAPE AK11882",
-    description: "3.000.000 Đ",
+    description: "2.000.000 Đ",
+    imgSrc:
+      "https://product.hstatic.net/200000182297/product/1_b65595811f46450087d95f1b8ad33184_master.jpg",
+  },
+  {
+    wid: 6,
+    title: "MĂNG TÔ VAI CAPE AK11883",
+    description: "2.500.000 Đ",
     imgSrc:
       "https://product.hstatic.net/200000182297/product/1_b65595811f46450087d95f1b8ad33184_master.jpg",
   },
@@ -125,7 +132,7 @@ const Home = () => {
   return (
     <>
       <HeaderF5 />
-      <div className="flex flex-col gap-6 p-6 bg-[#f5f5f5]">
+      <div className="flex flex-col gap-6 px-6 pt-6 pb-20 bg-[#f5f5f5]">
         <Swiper
           className="mySwiper rounded-xl"
           pagination={{
@@ -195,37 +202,44 @@ const Home = () => {
               alt="Banner 8"
             />
           </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://theme.hstatic.net/200000182297/1000887316/14/ms_banner_img1_master.jpg?v=1947"
+              alt="Banner 9"
+            />
+          </SwiperSlide>
         </Swiper>
 
         <div className="flex flex-col gap-6">
           <span className="text-2xl text-center font-bold">SẢN PHẨM MỚI</span>
-          <Carousel autoplay slidesToShow={5} dots={false}>
+          <Swiper
+            className="mySwiper swiper-slide rounded-xl"
+            slidesPerView={5}
+            slidesPerGroup={1}
+            spaceBetween={12}
+            navigation={true}
+            loop={true}
+            modules={[Autoplay, Navigation]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+          >
             {products.map((product) => (
-              <div
+              <SwiperSlide
                 key={product.id}
-                style={{ padding: "0 10px" }}
-                className="product-card"
+                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
               >
-                <Card
-                  hoverable
-                  cover={
-                    <img
-                      alt={product.tenSp}
-                      src={product.imageDefaul}
-                      style={{
-                        width: "100%",
-                        objectFit: "contain",
-                        height: "auto",
-                      }}
-                    />
-                  }
-                >
-                  <Meta
-                    title={product.tenSp}
-                    description={`${product.giaBan.toLocaleString()} VNĐ`}
-                  />
-                </Card>
-                {/* Lớp phủ khi hover */}
+                <img
+                  alt={product.tenSp}
+                  src={product.imageDefaul}
+                  className="w-full h-full object-cover"
+                />
+                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                  <span className="text-base font-bold">{product.tenSp}</span>
+                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
+                </div>
                 <div className="overlay">
                   <button
                     className="view-more-button"
@@ -234,102 +248,133 @@ const Home = () => {
                     Xem thêm
                   </button>
                 </div>
-              </div>
+              </SwiperSlide>
             ))}
-          </Carousel>
+          </Swiper>
         </div>
 
-        {/* Adjusted space for Banner 3 */}
-        <div style={{ margin: "40px 0" }}>
-          <Carousel autoplay>
-            <div>
-              <img
-                src="https://media.canifa.com/Simiconnector/BannerSlider/a/o/aogio_topbanner_desktop-12aug.webp"
-                alt="Banner 3"
-                style={{ width: "100%" }}
-              />
-            </div>
-          </Carousel>
-        </div>
-
-        {/* Hàng đồ đông mới */}
-        <h1 style={{ marginTop: "24px", textAlign: "center" }}>ĐỒ ĐÔNG MỚI</h1>
-        <Carousel
-          autoplay
-          slidesToShow={5}
-          dots={false}
-          style={{ margin: "0 5%" }}
-        >
-          {winterProducts.map((product) => (
-            <div
-              key={product.wid}
-              style={{ padding: "0 10px" }}
-              className="product-card"
-            >
-              <Card
-                hoverable
-                cover={
-                  <img
-                    alt={product.title}
-                    src={product.imgSrc}
-                    style={{
-                      width: "100%",
-                      objectFit: "contain",
-                      height: "auto",
-                    }}
-                  />
-                }
-              >
-                <Meta title={product.title} description={product.description} />
-              </Card>
-              {/* Lớp phủ khi hover */}
-              <div className="overlay">
-                <button className="view-more-button">Xem thêm</button>
-              </div>
-            </div>
-          ))}
-        </Carousel>
-
-        {/* F5 BLOG */}
-        <h1
-          style={{
-            marginTop: "24px",
-            textAlign: "center",
-            fontFamily: "gmv_din_pro-bold !important",
+        <Swiper
+          className="mySwiper rounded-xl mt-8"
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          loop={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
           }}
         >
-          F5 BLOG
-        </h1>
-        <h3
-          className="text-white"
-          style={{ marginTop: "5px", textAlign: "center" }}
-        >
-          ĐÓN ĐẦU XU HƯỚNG, ĐỊNH HÌNH PHONG CÁCH
-        </h3>
-        <Carousel
-          autoplay
-          slidesToShow={3}
-          dots={false}
-          style={{ margin: "0 20%", marginTop: "3%" }}
-        >
-          {f5Blogs.map((blog) => (
-            <div key={blog.fid} style={{ padding: "0 10px" }}>
-              <Card
-                hoverable
-                style={cardStyle}
-                cover={
-                  <img alt={blog.title} src={blog.imgSrc} style={imgStyle} />
-                }
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://media.canifa.com/Simiconnector/BannerSlider/a/o/aogio_topbanner_desktop-12aug.webp"
+              alt="Banner 1"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://2885371169.e.cdneverest.net/media/Simiconnector/BannerSlider/s/p/spmoi_topbanner_desktop-030425.webp"
+              alt="Banner 2"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://2885371169.e.cdneverest.net/media/Simiconnector/BannerSlider/f/a/family_topbanner_desktop-140425.webp"
+              alt="Banner 3"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://2885371169.e.cdneverest.net/media/Simiconnector/BannerSlider/c/a/canifas_topbanner_desktop-140425.webp"
+              alt="Banner 4"
+            />
+          </SwiperSlide>
+        </Swiper>
+
+        <div className="flex flex-col gap-6">
+          <span className="text-2xl text-center font-bold">ĐỒ ĐÔNG MỚI</span>
+          <Swiper
+            className="mySwiper swiper-slide rounded-xl"
+            slidesPerView={5}
+            slidesPerGroup={1}
+            spaceBetween={12}
+            navigation={true}
+            loop={true}
+            modules={[Autoplay, Navigation]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+          >
+            {winterProducts.map((product) => (
+              <SwiperSlide
+                key={product.wid}
+                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
               >
-                <Meta
-                  title={blog.title}
-                  description={blog.description}
-                  style={metaStyle}
+                <img
+                  alt={product.title}
+                  src={product.imgSrc}
+                  className="w-full h-full object-cover"
                 />
-              </Card>
-            </div>
-          ))}
-        </Carousel>
+                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                  <span className="text-base font-bold">{product.title}</span>
+                  <span className="text-sm font-bold text-primary">{`${product.description}`}</span>
+                </div>
+                <div className="overlay">
+                  <button
+                    className="view-more-button"
+                    onClick={() => handleViewMore(product.id)}
+                  >
+                    Xem thêm
+                  </button>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className="flex flex-col gap-6 px-40">
+          <div className="flex flex-col gap-2">
+            <span className="text-2xl text-center font-bold">F5 BLOG</span>
+            <span className="text-base text-center font-bold">
+              ĐÓN ĐẦU XU HƯỚNG, ĐỊNH HÌNH PHONG CÁCH
+            </span>
+          </div>
+          <Swiper
+            className="mySwiper swiper-slide rounded-xl"
+            slidesPerView={3}
+            slidesPerGroup={1}
+            spaceBetween={12}
+            navigation={true}
+            loop={true}
+            modules={[Autoplay, Navigation]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+          >
+            {f5Blogs.map((blog) => (
+              <SwiperSlide
+                key={blog.wid}
+                className="blog-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
+              >
+                <img
+                  alt={blog.title}
+                  src={blog.imgSrc}
+                  className="w-full h-full object-cover aspect-[5/3]"
+                />
+                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                  <span className="text-base font-bold">{blog.title}</span>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </>
   );
