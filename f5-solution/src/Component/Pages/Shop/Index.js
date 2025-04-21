@@ -1,33 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Carousel, Card, message } from "antd";
+import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import HomeView from "../../../Service/HomeService";
 import HeaderF5 from "../../Layouts/Header/Header";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-
-const { Content } = Layout;
-const { Meta } = Card;
-
-const cardStyle = {
-  width: "100%", // Chiều rộng cố định của mỗi Card
-  height: "250px", // Chiều cao cố định của mỗi Card
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-};
-
-const imgStyle = {
-  width: "100%",
-  height: "200px", // Chiều cao cố định cho ảnh
-  objectFit: "cover", // Giúp hình ảnh giữ tỷ lệ mà không bị méo
-};
-
-const metaStyle = {
-  margin: "0",
-  padding: "0",
-};
 
 const winterProducts = [
   {

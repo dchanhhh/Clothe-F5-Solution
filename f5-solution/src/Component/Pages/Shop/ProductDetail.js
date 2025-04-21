@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Row,
-  Col,
-  Button,
-  Layout,
-  Card,
-  Carousel,
-  message,
-  notification,
-} from "antd";
-import { CheckOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import { Layout, message, notification } from "antd";
 import { FaCheck } from "react-icons/fa6";
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import "./Home.css";
 import { Content } from "antd/es/layout/layout";
 import HomeView from "../../../Service/HomeService";
 import GioHangService from "../../../Service/GiohangService";
 import HeaderF5 from "../../Layouts/Header/Header";
-const { Header } = Layout;
-const { Meta } = Card;
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
 
 const ProductDetail = () => {
   const navigate = useNavigate();
@@ -392,209 +383,204 @@ const ProductDetail = () => {
   }
 
   return (
-    <Layout>
+    <div className="bg-[#f5f5f5]">
       <HeaderF5 />
-      <Content>
-        <Layout>
-          <div className="p-3 mx-[12%]">
-            <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-2 max-h-[600px] overflow-y-auto">
-                <div className="flex flex-col gap-2 items-center justify-center mr-1">
+      <div className="flex flex-col gap-10 pt-5 pb-12 mx-[12%]">
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-2 max-h-[600px] overflow-y-auto">
+            <div className="flex flex-col gap-2 items-center justify-center mr-1">
+              <img
+                className="cursor-pointer object-cover"
+                src={product?.imageDefaul}
+                alt={product?.tenSp}
+                style={{
+                  border:
+                    mainImage === product?.imageDefaul
+                      ? "2px solid #1890ff"
+                      : "1px solid #ddd",
+                }}
+                onClick={() => setMainImage(product?.imageDefaul)}
+              />
+              {product?.images
+                ?.slice(startIndex, startIndex + visibleImages)
+                .map((img) => (
                   <img
                     className="cursor-pointer object-cover"
-                    src={product?.imageDefaul}
-                    alt={product?.tenSp}
+                    key={img.id}
+                    src={img.tenImage}
+                    alt={product.tenSp}
                     style={{
                       border:
-                        mainImage === product?.imageDefaul
+                        mainImage === img.tenImage
                           ? "2px solid #1890ff"
                           : "1px solid #ddd",
                     }}
-                    onClick={() => setMainImage(product?.imageDefaul)}
+                    onClick={() => setMainImage(img.tenImage)}
                   />
-                  {product?.images
-                    ?.slice(startIndex, startIndex + visibleImages)
-                    .map((img) => (
-                      <img
-                        className="cursor-pointer object-cover"
-                        key={img.id}
-                        src={img.tenImage}
-                        alt={product.tenSp}
-                        style={{
-                          border:
-                            mainImage === img.tenImage
-                              ? "2px solid #1890ff"
-                              : "1px solid #ddd",
-                        }}
-                        onClick={() => setMainImage(img.tenImage)}
-                      />
-                    ))}
-                </div>
-              </div>
+                ))}
+            </div>
+          </div>
 
-              <div className="col-span-4 border border-gray-300">
-                <img
-                  src={mainImage}
-                  alt={product?.tenSp || ""}
-                  className="w-full h-full object-cover"
-                />
+          <div className="col-span-4 border border-gray-300">
+            <img
+              src={mainImage}
+              alt={product?.tenSp || ""}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="col-span-6 flex flex-col justify-between gap-4 p-4">
+            <div className="flex flex-col gap-5">
+              <div className="text-2xl font-bold uppercase text-center">
+                {product?.tenSp || "Tên sản phẩm"}
               </div>
-              <div className="col-span-6 flex flex-col justify-center gap-4 p-4">
-                <div className="text-2xl font-bold uppercase text-center">
-                  {product?.tenSp || "Tên sản phẩm"}
-                </div>
-                <div className="text-base font-medium">
-                  Mã sản phẩm: {product?.maSp || ""}
-                </div>
-                <div className="flex gap-2 items-center text-2xl font-semibold">
-                  <span>Giá:</span>
-                  <span className="text-[#FF0000]">
-                    {product?.giaBan.toLocaleString() || 0} VNĐ
-                  </span>
-                </div>
-                <span className="text-base font-medium">
-                  Chất liệu: {product?.chatLieu?.tenChatLieu || "Không rõ"}
+              <div className="text-base font-medium">
+                Mã sản phẩm: {product?.maSp || ""}
+              </div>
+              <div className="flex gap-2 items-center text-2xl font-semibold">
+                <span>Giá:</span>
+                <span className="text-[#FF0000]">
+                  {product?.giaBan.toLocaleString() || 0} VNĐ
                 </span>
-                <div className="flex flex-col gap-4">
-                  {product && (
-                    <>
-                      <div className="flex flex-col gap-2">
-                        <span className="text-base font-semibold">
-                          Màu sắc:
-                        </span>
-                        <div className="flex gap-2">
-                          {uniqueColors.map((mauSac, index) => (
-                            <div
-                              key={mauSac.mauSacId}
-                              className={`relative w-10 h-10 rounded-full text-center cursor-pointer ${
-                                selectedColor === mauSac.mauSacId
-                                  ? "border-2 border-black"
-                                  : "border border-[#ddd]"
-                              }`}
-                              style={{ backgroundColor: mauSac.mauSacTen }}
-                              onClick={() => handleSelectColor(mauSac)}
-                            >
-                              {selectedColor === mauSac.mauSacId && (
-                                <FaCheck className="absolute top-3 right-[11px]" />
-                              )}
-                            </div>
-                          ))}
-                        </div>
+              </div>
+              <span className="text-base font-medium">
+                Chất liệu: {product?.chatLieu?.tenChatLieu || "Không rõ"}
+              </span>
+              <div className="flex flex-col gap-4">
+                {product && (
+                  <>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-base font-semibold">Màu sắc:</span>
+                      <div className="flex gap-2">
+                        {uniqueColors.map((mauSac, index) => (
+                          <div
+                            key={mauSac.mauSacId}
+                            className={`relative w-10 h-10 rounded-full text-center cursor-pointer ${
+                              selectedColor === mauSac.mauSacId
+                                ? "border-2 border-black"
+                                : "border border-[#ddd]"
+                            }`}
+                            style={{ backgroundColor: mauSac.mauSacTen }}
+                            onClick={() => handleSelectColor(mauSac)}
+                          >
+                            {selectedColor === mauSac.mauSacId && (
+                              <FaCheck className="absolute top-3 right-[11px]" />
+                            )}
+                          </div>
+                        ))}
                       </div>
+                    </div>
 
-                      <div className="flex flex-col gap-2">
-                        <span className="text-base font-semibold">Size:</span>
-                        <div className="flex gap-2">
-                          {availableSizes.map((size) => (
-                            <div
-                              key={size.sizeId}
-                              className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer ${
-                                selectedSize === size.sizeId
-                                  ? "border-2 border-black"
-                                  : "border border-[#ddd]"
-                              }`}
-                              onClick={() => handleSelectSize(size.sizeId)}
-                            >
-                              <span className="text-base font-semibold">
-                                {size.sizeTen}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-base font-semibold">Size:</span>
+                      <div className="flex gap-2">
+                        {availableSizes.map((size) => (
+                          <div
+                            key={size.sizeId}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center cursor-pointer ${
+                              selectedSize === size.sizeId
+                                ? "border-2 border-black"
+                                : "border border-[#ddd]"
+                            }`}
+                            onClick={() => handleSelectSize(size.sizeId)}
+                          >
+                            <span className="text-base font-semibold">
+                              {size.sizeTen}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </>
+                )}
+              </div>
 
-                <div className="flex gap-2 items-center">
-                  <span className="text-base font-semibold">
-                    Số lượng trong kho:
-                  </span>
-                  <span className="text-base font-bold text-primary">
-                    {soLuong}
-                  </span>
-                </div>
+              <div className="flex gap-2 items-center">
+                <span className="text-base font-semibold">
+                  Số lượng trong kho:
+                </span>
+                <span className="text-base font-bold text-primary">
+                  {soLuong}
+                </span>
+              </div>
 
-                <div className="flex gap-2 items-center">
-                  <button onClick={decreaseQuantity} disabled={quantity <= 1}>
-                    <MinusOutlined />
-                  </button>
-                  <span style={{ padding: "0 15px", fontWeight: 500 }}>
-                    {quantity}
-                  </span>
-                  <button onClick={increaseQuantity}>
-                    <PlusOutlined />
-                  </button>
-                </div>
-
-                <div
-                  className="outline-none bg-black text-white text-base text-center font-semibold rounded-lg py-2 cursor-pointer hover:scale-105"
-                  onClick={handleAddToCart}
+              <div className="flex gap-4 items-center">
+                <button
+                  className="p-2 m-0 outline-none"
+                  onClick={decreaseQuantity}
+                  disabled={quantity <= 1}
                 >
-                  Thêm vào giỏ hàng
-                </div>
-                <div
-                  className="bg-primary text-white py-2 font-semibold text-base rounded-lg outline-none text-center cursor-pointer hover:scale-105"
-                  onClick={handleBuyNow}
+                  <AiOutlineMinus size={16} />
+                </button>
+                <span className="text-base font-semibold">{quantity}</span>
+                <button
+                  className="p-2 m-0 outline-none"
+                  onClick={increaseQuantity}
                 >
-                  Mua ngay
-                </div>
+                  <AiOutlinePlus size={16} />
+                </button>
               </div>
             </div>
-            <h1
-              style={{
-                marginTop: "3%",
-                textAlign: "center",
-                marginBottom: "2%",
-              }}
-            >
-              XEM THÊM CÁC SẢN PHẨM TƯƠNG TỰ
-            </h1>
-            <Carousel
-              slidesToShow={4}
-              dots={false}
-              style={{ margin: "0 2%", marginBottom: "10%" }}
-            >
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  style={{ padding: "0 10px" }}
-                  className="product-card"
-                >
-                  <Card
-                    hoverable
-                    cover={
-                      <img
-                        alt={product.tenSp}
-                        src={product.imageDefaul}
-                        style={{
-                          width: "100%",
-                          objectFit: "contain",
-                          height: "auto",
-                        }}
-                      />
-                    }
-                  >
-                    <Meta
-                      title={product.tenSp}
-                      description={`${product.giaBan.toLocaleString()} VNĐ`}
-                    />
-                  </Card>
-                  <div className="overlay">
-                    <button
-                      className="view-more-button"
-                      onClick={() => handleViewMore(product.id)}
-                    >
-                      Xem thêm
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </Carousel>
+            <div className="flex flex-col gap-3">
+              <div
+                className="outline-none bg-black text-white text-base text-center font-semibold rounded-lg py-2 cursor-pointer hover:scale-105"
+                onClick={handleAddToCart}
+              >
+                Thêm vào giỏ hàng
+              </div>
+              <div
+                className="bg-primary text-white py-2 font-semibold text-base rounded-lg outline-none text-center cursor-pointer hover:scale-105"
+                onClick={handleBuyNow}
+              >
+                Mua ngay
+              </div>
+            </div>
           </div>
-        </Layout>
-      </Content>
-    </Layout>
+        </div>
+        <div className="flex flex-col gap-6">
+          <span className="text-2xl text-center font-bold">
+            XEM THÊM CÁC SẢN PHẨM TƯƠNG TỰ
+          </span>
+          <Swiper
+            className="mySwiper swiper-slide rounded-xl"
+            slidesPerView={4}
+            slidesPerGroup={1}
+            spaceBetween={12}
+            navigation={true}
+            loop={true}
+            modules={[Autoplay, Navigation]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+          >
+            {products.map((product) => (
+              <SwiperSlide
+                key={product.id}
+                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
+              >
+                <img
+                  alt={product.tenSp}
+                  src={product.imageDefaul}
+                  className="w-full h-full object-cover"
+                />
+                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                  <span className="text-base font-bold">{product.tenSp}</span>
+                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
+                </div>
+                <div className="overlay">
+                  <button
+                    className="view-more-button"
+                    onClick={() => handleViewMore(product.id)}
+                  >
+                    Xem thêm
+                  </button>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
+    </div>
   );
 };
 
