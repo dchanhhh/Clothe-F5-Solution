@@ -69,7 +69,7 @@ const ContactPage = () => {
         </div>
       </div>
 
-      <div className="max-w-screen-xl my-3 mx-auto p-5 bg-white rounded-xl shadow-xl border-2 border-[#f0f2f5]">
+      <div className="max-w-screen-xl mt-3 mb-10 mx-auto p-5 bg-white rounded-xl shadow-xl border-2 border-[#f0f2f5]">
         <div className="flex justify-between gap-5">
           <div className="flex flex-col gap-5 w-2/5">
             <span className="text-2xl font-bold text-center">

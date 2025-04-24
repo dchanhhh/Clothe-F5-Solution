@@ -53,6 +53,7 @@ const ProductPage = () => {
       Áo: [],
       Quần: [],
       Váy: [],
+      "Chân váy": [],
       Khác: [], // Để nhóm những sản phẩm không thuộc các danh mục trên
     };
 
@@ -66,6 +67,8 @@ const ProductPage = () => {
           categoryGroups["Quần"].push(categoryName);
         } else if (categoryName.includes("Váy")) {
           categoryGroups["Váy"].push(categoryName);
+        } else if (categoryName.includes("Chân váy")) {
+          categoryGroups["Chân váy"].push(categoryName);
         } else {
           categoryGroups["Khác"].push(categoryName);
         }
@@ -340,7 +343,9 @@ const ProductPage = () => {
                     className="w-full h-full object-cover"
                   />
                   <div className="flex flex-col gap-2 p-3 items-center border-t border-t-gray-200">
-                    <span className="text-base font-bold">{product.tenSp}</span>
+                    <span className="text-base font-bold uppercase">
+                      {product.tenSp}
+                    </span>
                     <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
                   </div>
                   <div className="overlay">

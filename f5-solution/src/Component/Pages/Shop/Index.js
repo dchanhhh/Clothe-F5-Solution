@@ -215,7 +215,9 @@ const Home = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-base font-bold">{product.tenSp}</span>
+                  <span className="text-base font-semibold uppercase text-[#555]">
+                    {product.tenSp}
+                  </span>
                   <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
                 </div>
                 <div className="overlay">
@@ -300,7 +302,9 @@ const Home = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-base font-bold">{product.title}</span>
+                  <span className="text-base font-semibold uppercase text-[#555]">
+                    {product.title}
+                  </span>
                   <span className="text-sm font-bold text-primary">{`${product.description}`}</span>
                 </div>
                 <div className="overlay">
@@ -347,7 +351,9 @@ const Home = () => {
                   className="w-full h-full object-cover aspect-[5/3]"
                 />
                 <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-base font-bold">{blog.title}</span>
+                  <span className="text-base font-semibold uppercase text-[#555]">
+                    {blog.title}
+                  </span>
                 </div>
               </SwiperSlide>
             ))}

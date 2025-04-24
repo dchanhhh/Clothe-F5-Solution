@@ -564,7 +564,9 @@ const ProductDetail = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-base font-bold">{product.tenSp}</span>
+                  <span className="text-base font-semibold uppercase text-[#555]">
+                    {product.tenSp}
+                  </span>
                   <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
                 </div>
                 <div className="overlay">
