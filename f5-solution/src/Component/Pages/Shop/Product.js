@@ -51,6 +51,7 @@ const ProductPage = () => {
   const getCategories = (products) => {
     const categoryGroups = {
       Áo: [],
+      "Áo khoác": [],
       Quần: [],
       Váy: [],
       "Chân váy": [],
@@ -61,10 +62,12 @@ const ProductPage = () => {
       if (product.danhMuc && product.danhMuc.tenDanhMuc) {
         const categoryName = product.danhMuc.tenDanhMuc;
         // Gán sản phẩm vào đúng nhóm
-        if (categoryName.includes("Áo")) {
-          categoryGroups["Áo"].push(categoryName);
+        if (categoryName.includes("Áo khoác")) {
+          categoryGroups["Áo khoác"].push(categoryName);
         } else if (categoryName.includes("Quần")) {
           categoryGroups["Quần"].push(categoryName);
+        } else if (categoryName.includes("Áo")) {
+          categoryGroups["Áo"].push(categoryName);
         } else if (categoryName.includes("Váy")) {
           categoryGroups["Váy"].push(categoryName);
         } else if (categoryName.includes("Chân váy")) {
