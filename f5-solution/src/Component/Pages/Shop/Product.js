@@ -21,7 +21,7 @@ const ProductPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSize, setSelectedSize] = useState("all");
   const [selectedColor, setSelectedColor] = useState("all");
-  const [selectedPrice, setSelectedPrice] = useState([0, 1000000]);
+  const [selectedPrice, setSelectedPrice] = useState([0, 2000000]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [showSubMenu, setShowSubMenu] = useState();
@@ -62,7 +62,12 @@ const ProductPage = () => {
       if (product.danhMuc && product.danhMuc.tenDanhMuc) {
         const categoryName = product.danhMuc.tenDanhMuc;
         // Gán sản phẩm vào đúng nhóm
-        if (categoryName.includes("Áo khoác")) {
+        if (
+          categoryName.includes("Áo khoác") ||
+          categoryName.includes("Măng tô") ||
+          categoryName.includes("phao") ||
+          categoryName.includes("vest")
+        ) {
           categoryGroups["Áo khoác"].push(categoryName);
         } else if (categoryName.includes("Quần")) {
           categoryGroups["Quần"].push(categoryName);
@@ -323,8 +328,8 @@ const ProductPage = () => {
                   <Slider
                     range
                     min={0}
-                    max={1000000}
-                    step={10000}
+                    max={2000000}
+                    step={20000}
                     defaultValue={selectedPrice}
                     onChange={handlePriceChange}
                     value={selectedPrice}
@@ -346,7 +351,7 @@ const ProductPage = () => {
                     className="w-full h-full object-cover"
                   />
                   <div className="flex flex-col gap-2 p-3 items-center border-t border-t-gray-200">
-                    <span className="text-base font-bold uppercase">
+                    <span className="text-sm font-bold uppercase text-center ">
                       {product.tenSp}
                     </span>
                     <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
