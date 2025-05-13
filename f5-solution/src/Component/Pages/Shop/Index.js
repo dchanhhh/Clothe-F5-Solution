@@ -95,7 +95,6 @@ const Home = () => {
       try {
         const data = await HomeView.ViewProductHome();
         setProducts(data); // Cập nhật danh sách sản phẩm mới từ API
-        console.log(data);
       } catch (error) {
         message.error(error || "Không thể tải danh sách sản phẩm.");
       } finally {
