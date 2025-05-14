@@ -558,7 +558,7 @@ function Checkout() {
   const subtotal = cartItems.reduce((acc, item) => acc + item.Price, 0);
   const total = subtotal - discount + codFee;
   return (
-    <div className="flex flex-col gap-5 h-screen">
+    <div className="flex flex-col gap-5 mb-10">
       <CustomHeader />
       <div className="flex gap-8 px-8 w-full">
         <div className="bg-[#f5f5f5] flex flex-col gap-5 rounded-xl p-5 w-1/2 border border-gray-200">
