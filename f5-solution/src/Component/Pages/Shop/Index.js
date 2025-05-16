@@ -7,50 +7,6 @@ import HeaderF5 from "../../Layouts/Header/Header";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 
-const winterProducts = [
-  {
-    wid: 1,
-    title: "MĂNG TÔ CAO CẤP AK13262",
-    description: "2.200.000 Đ",
-    imgSrc:
-      "https://product.hstatic.net/200000182297/product/12_14b69d65c3014d18a336f3d8beaee4cb_master.jpg",
-  },
-  {
-    wid: 2,
-    title: "ÁO KHOÁC THIẾT KẾ AK13742",
-    description: "1.500.000 Đ",
-    imgSrc:
-      "https://product.hstatic.net/200000182297/product/14_664080a99a6f4cd6ab61b6e40a3cdb48_master.jpg",
-  },
-  {
-    wid: 3,
-    title: "MĂNG TÔ AK11882",
-    description: "900.000 Đ",
-    imgSrc:
-      "https://product.hstatic.net/200000182297/product/5_0f84ef8d1aef4341a9fe107ee70fb7db_master.jpg",
-  },
-  {
-    wid: 4,
-    title: "MĂNG TÔ VAI CAPE AK11882",
-    description: "3.000.000 Đ",
-    imgSrc:
-      "https://product.hstatic.net/200000182297/product/1_b65595811f46450087d95f1b8ad33184_master.jpg",
-  },
-  {
-    wid: 5,
-    title: "MĂNG TÔ VAI CAPE AK11882",
-    description: "2.000.000 Đ",
-    imgSrc:
-      "https://product.hstatic.net/200000182297/product/1_b65595811f46450087d95f1b8ad33184_master.jpg",
-  },
-  {
-    wid: 6,
-    title: "MĂNG TÔ VAI CAPE AK11883",
-    description: "2.500.000 Đ",
-    imgSrc:
-      "https://product.hstatic.net/200000182297/product/1_b65595811f46450087d95f1b8ad33184_master.jpg",
-  },
-];
 const f5Blogs = [
   {
     fid: 1,
@@ -102,6 +58,16 @@ const Home = () => {
     };
     fetchNewProducts();
   }, []);
+
+  const listDamProducts = products.filter(
+    (product) => product.danhMuc?.tenDanhMuc === "Đầm"
+  );
+
+  const listAoProducts = products.filter(
+    (product) =>
+      product.danhMuc?.tenDanhMuc === "Áo sơ mi" ||
+      product.danhMuc?.tenDanhMuc === "Áo phông"
+  );
 
   const handleViewMore = (id) => {
     navigate(`/Products/${id}`);
@@ -276,7 +242,9 @@ const Home = () => {
         </Swiper>
 
         <div className="flex flex-col gap-6">
-          <span className="text-2xl text-center font-bold">ĐỒ ĐÔNG MỚI</span>
+          <span className="text-2xl text-center font-bold">
+            SẢN PHẨM GIÁ TỐT
+          </span>
           <Swiper
             className="mySwiper swiper-slide rounded-xl"
             slidesPerView={5}
@@ -290,21 +258,110 @@ const Home = () => {
               disableOnInteraction: false,
             }}
           >
-            {winterProducts.map((product) => (
+            {listDamProducts.map((product) => (
               <SwiperSlide
-                key={product.wid}
+                key={product.id}
                 className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
               >
                 <img
-                  alt={product.title}
-                  src={product.imgSrc}
+                  alt={product.tenSp}
+                  src={product.imageDefaul}
                   className="w-full h-full object-cover"
                 />
                 <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
                   <span className="text-sm font-bold uppercase ">
-                    {product.title}
+                    {product.tenSp}
                   </span>
-                  <span className="text-sm font-bold text-primary">{`${product.description}`}</span>
+                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
+                </div>
+                <div className="overlay">
+                  <button
+                    className="view-more-button"
+                    onClick={() => handleViewMore(product.id)}
+                  >
+                    Xem thêm
+                  </button>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <Swiper
+          className="mySwiper rounded-xl mt-8"
+          pagination={{
+            clickable: true,
+          }}
+          navigation={true}
+          loop={true}
+          modules={[Autoplay, Pagination, Navigation]}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+        >
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://file.hstatic.net/200000182297/file/vac_fd6422cd073b44208df1c5e9432f4043.jpg"
+              alt="Banner 1"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://file.hstatic.net/200000182297/file/knik3_15d6aacb3b394d989edaf7f747634e78.jpg"
+              alt="Banner 2"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://file.hstatic.net/200000182297/file/tone-sur-tone.jpg"
+              alt="Banner 3"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              className="object-cover w-full h-full"
+              src="https://file.hstatic.net/200000182297/file/banner-web-ct-sale-ec-t5-1920x500.jpg"
+              alt="Banner 4"
+            />
+          </SwiperSlide>
+        </Swiper>
+
+        <div className="flex flex-col gap-6">
+          <span className="text-2xl text-center font-bold">
+            CÁC MẪU ÁO NỔI BẬT
+          </span>
+          <Swiper
+            className="mySwiper swiper-slide rounded-xl"
+            slidesPerView={5}
+            slidesPerGroup={1}
+            spaceBetween={12}
+            navigation={true}
+            loop={true}
+            modules={[Autoplay, Navigation]}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+          >
+            {listAoProducts.map((product) => (
+              <SwiperSlide
+                key={product.id}
+                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
+              >
+                <img
+                  alt={product.tenSp}
+                  src={product.imageDefaul}
+                  className="w-full h-full object-cover"
+                />
+                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                  <span className="text-sm font-bold uppercase ">
+                    {product.tenSp}
+                  </span>
+                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
                 </div>
                 <div className="overlay">
                   <button

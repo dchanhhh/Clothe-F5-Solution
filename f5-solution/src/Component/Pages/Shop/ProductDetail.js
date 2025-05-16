@@ -44,6 +44,13 @@ const ProductDetail = () => {
   }, []);
 
   useEffect(() => {
+    setSelectedColor(null);
+    setSelectedSize(null);
+    setQuantity(1);
+    setSoluong(0);
+  }, [product]);
+
+  useEffect(() => {
     const fetchNewProducts = async () => {
       try {
         const data = await HomeView.ViewProductHome();
@@ -182,7 +189,6 @@ const ProductDetail = () => {
       );
 
       if (filteredProductsWithSize.length > 0) {
-        // Lấy ID sản phẩm đầu tiên từ kết quả lọc
         setSelectedProductId(filteredProductsWithSize[0].sanPhamChiTietId);
         setSoluong(filteredProductsWithSize[0].soLuongTon);
         console.log(
