@@ -194,15 +194,15 @@ const Dashboard = () => {
               <Menu.Item key="2-3-3" onClick={() => handleMenuClick("2-3-3")}>
                 Quản lý chất liệu
               </Menu.Item>
-              <Menu.Item key="2-3-4" onClick={() => handleMenuClick("2-3-4")}>
+              {/* <Menu.Item key="2-3-4" onClick={() => handleMenuClick("2-3-4")}>
                 Quản lý xuất xứ
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="2-3-5" onClick={() => handleMenuClick("2-3-5")}>
                 Quản lý danh mục
               </Menu.Item>
-              <Menu.Item key="2-3-6" onClick={() => handleMenuClick("2-3-6")}>
+              {/* <Menu.Item key="2-3-6" onClick={() => handleMenuClick("2-3-6")}>
                 Quản lý thương hiệu
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="2-3-7" onClick={() => handleMenuClick("2-3-7")}>
                 Quản lý hình ảnh
               </Menu.Item>

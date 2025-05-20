@@ -520,23 +520,25 @@ const ProductManagement = () => {
                   <Button icon={<UploadOutlined />}>Chọn Ảnh</Button>
                 </Upload>
               </Form.Item>
-              <Form.Item
-                label="Mã Sản Phẩm"
-                name="maSp"
-                rules={[
-                  {
-                    required: true,
-                    validator: (_, value) => {
-                      if (!value || value.trim() === "") {
-                        return Promise.reject("Vui lòng nhập mã Sản phẩm");
-                      }
-                      return Promise.resolve();
+              {editingProduct && (
+                <Form.Item
+                  label="Mã Sản Phẩm"
+                  name="maSp"
+                  rules={[
+                    {
+                      required: true,
+                      validator: (_, value) => {
+                        if (!value || value.trim() === "") {
+                          return Promise.reject("Vui lòng nhập mã Sản phẩm");
+                        }
+                        return Promise.resolve();
+                      },
                     },
-                  },
-                ]}
-              >
-                <Input placeholder="Nhập mã Sản Phẩm" />
-              </Form.Item>
+                  ]}
+                >
+                  <Input placeholder="Mã Sản Phẩm" readOnly />
+                </Form.Item>
+              )}
               <Form.Item
                 label="Tên Sản Phẩm"
                 name="tenSp"
