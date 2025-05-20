@@ -91,7 +91,7 @@ const Profile = () => {
       console.log(data);
       setUserProfile({
         hoVaTenKh: data.hoVaTenKh,
-        TaiKhoan: data.TaiKhoan,
+        taiKhoan: data.taiKhoan,
         fullName: data.fullName,
         email: data.email,
         ngaySinh: moment(data.ngaySinh).format("YYYY-MM-DD"),
@@ -192,6 +192,15 @@ const Profile = () => {
               onSubmit={handleFormSubmit}
               className="flex flex-col gap-4 w-full"
             >
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold">Tên đăng nhập</span>
+                <input
+                  className="px-2.5 rounded bg-gray-100 text-gray-500 border border-gray-300"
+                  name="taiKhoan"
+                  value={userProfile.taiKhoan}
+                  disabled
+                />
+              </div>
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-semibold">Họ và tên</span>
                 <input
