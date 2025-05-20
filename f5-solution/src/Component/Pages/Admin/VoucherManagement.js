@@ -1,7 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Table, message, DatePicker, InputNumber, Select, Modal, Switch, Row, Col } from 'antd';
-import axios from 'axios';
-import moment from 'moment';
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Table,
+  message,
+  DatePicker,
+  InputNumber,
+  Select,
+  Modal,
+  Switch,
+  Row,
+  Col,
+} from "antd";
+import axios from "axios";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -12,7 +25,7 @@ const VoucherManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [form] = Form.useForm();
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10; // Set number of vouchers per page
@@ -21,10 +34,13 @@ const VoucherManagement = () => {
   const fetchVouchers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('https://localhost:7030/api/VouCher');
-      const updatedVouchers = response.data.map(voucher => {
+      const response = await axios.get("https://localhost:7030/api/VouCher");
+      const updatedVouchers = response.data.map((voucher) => {
         const currentDate = moment(); // Get current date
-        if (voucher.soLuongDung === voucher.soLuongMa || currentDate.isAfter(moment(voucher.ngayKetThuc))) {
+        if (
+          voucher.soLuongDung === voucher.soLuongMa ||
+          currentDate.isAfter(moment(voucher.ngayKetThuc))
+        ) {
           voucher.trangThai = 0; // Set status to inactive
           updateVoucherStatus(voucher); // Update status in the backend
         }
@@ -32,7 +48,7 @@ const VoucherManagement = () => {
       });
       setVouchers(updatedVouchers);
     } catch (error) {
-      message.error('Failed to fetch vouchers.');
+      message.error("Failed to fetch vouchers.");
     }
     setLoading(false);
   };
@@ -45,7 +61,7 @@ const VoucherManagement = () => {
         trangThai: 0, // Set status to inactive
       });
     } catch (error) {
-      message.error('Failed to update voucher status.');
+      message.error("Failed to update voucher status.");
     }
   };
 
@@ -87,24 +103,33 @@ const VoucherManagement = () => {
     try {
       const formattedValues = {
         ...values,
-        ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
-        ngayKetThuc: values.ngayKetThuc ? values.ngayKetThuc.format('YYYY-MM-DD') : null,
+        ngayBatDau: values.ngayBatDau
+          ? values.ngayBatDau.format("YYYY-MM-DD")
+          : null,
+        ngayKetThuc: values.ngayKetThuc
+          ? values.ngayKetThuc.format("YYYY-MM-DD")
+          : null,
       };
 
       if (isEditing && selectedVoucher) {
         // Update existing voucher
-        await axios.put(`https://localhost:7030/api/VouCher/${selectedVoucher.id}`, formattedValues);
-        message.success('Voucher updated successfully!');
+        await axios.put(
+          `https://localhost:7030/api/VouCher/${selectedVoucher.id}`,
+          formattedValues
+        );
+        message.success("Voucher updated successfully!");
       } else {
         // Create new voucher
-        await axios.post('https://localhost:7030/api/VouCher', formattedValues);
-        message.success('Voucher created successfully!');
+        await axios.post("https://localhost:7030/api/VouCher", formattedValues);
+        message.success("Voucher created successfully!");
       }
 
       fetchVouchers(); // Refresh the voucher list
-      handleCancel();  // Close the modal
+      handleCancel(); // Close the modal
     } catch (error) {
-      message.error(isEditing ? 'Failed to update voucher.' : 'Failed to create voucher.');
+      message.error(
+        isEditing ? "Failed to update voucher." : "Failed to create voucher."
+      );
     }
   };
 
@@ -115,84 +140,87 @@ const VoucherManagement = () => {
         ...voucher,
         trangThai: newStatus ? 1 : 0, // Update the status to 1 (active) or 0 (inactive)
       };
-      await axios.put(`https://localhost:7030/api/VouCher/${voucher.id}`, updatedVoucher);
-      message.success('Voucher status updated successfully!');
+      await axios.put(
+        `https://localhost:7030/api/VouCher/${voucher.id}`,
+        updatedVoucher
+      );
+      message.success("Voucher status updated successfully!");
       fetchVouchers(); // Refresh the voucher list
     } catch (error) {
-      message.error('Failed to update voucher status.');
+      message.error("Failed to update voucher status.");
     }
   };
 
   // Columns for Ant Design Table
   const columns = [
     {
-      title: 'STT', // Add a header for the sequence number
-      dataIndex: 'index', // New index field
-      key: 'index',
+      title: "STT", // Add a header for the sequence number
+      dataIndex: "index", // New index field
+      key: "index",
       render: (_, __, index) => (currentPage - 1) * pageSize + index + 1, // Generate sequential number based on page
       width: 70, // Set width for better alignment
     },
     {
-      title: 'Ma Voucher',
-      dataIndex: 'maVouCher',
-      key: 'maVouCher',
+      title: "Ma Voucher",
+      dataIndex: "maVouCher",
+      key: "maVouCher",
     },
     {
-      title: 'Ten Voucher',
-      dataIndex: 'tenVouCher',
-      key: 'tenVouCher',
+      title: "Ten Voucher",
+      dataIndex: "tenVouCher",
+      key: "tenVouCher",
     },
     {
-      title: 'Ngay Bat Dau',
-      dataIndex: 'ngayBatDau',
-      key: 'ngayBatDau',
-      render: (text) => moment(text).format('YYYY-MM-DD'),
+      title: "Ngay Bat Dau",
+      dataIndex: "ngayBatDau",
+      key: "ngayBatDau",
+      render: (text) => moment(text).format("YYYY-MM-DD"),
     },
     {
-      title: 'Ngay Ket Thuc',
-      dataIndex: 'ngayKetThuc',
-      key: 'ngayKetThuc',
-      render: (text) => moment(text).format('YYYY-MM-DD'),
+      title: "Ngay Ket Thuc",
+      dataIndex: "ngayKetThuc",
+      key: "ngayKetThuc",
+      render: (text) => moment(text).format("YYYY-MM-DD"),
     },
     {
-      title: 'So Luong Ma',
-      dataIndex: 'soLuongMa',
-      key: 'soLuongMa',
+      title: "So Luong Ma",
+      dataIndex: "soLuongMa",
+      key: "soLuongMa",
     },
     {
-      title: 'So Luong Da Dung',
-      dataIndex: 'soLuongDung',
-      key: 'soLuongDung',
+      title: "So Luong Da Dung",
+      dataIndex: "soLuongDung",
+      key: "soLuongDung",
     },
     {
-      title: 'Gia Tri Giam',
-      dataIndex: 'giaTriGiam',
-      key: 'giaTriGiam',
+      title: "Gia Tri Giam",
+      dataIndex: "giaTriGiam",
+      key: "giaTriGiam",
     },
     {
-      title: 'Dieu Kien Toi Thieu Hoa Don',
-      dataIndex: 'dieuKienToiThieuHoaDon',
-      key: 'dieuKienToiThieuHoaDon',
+      title: "Dieu Kien Toi Thieu Hoa Don",
+      dataIndex: "dieuKienToiThieuHoaDon",
+      key: "dieuKienToiThieuHoaDon",
     },
     {
-      title: 'Hinh Thuc Giam',
-      dataIndex: 'hinhThucGiam',
-      key: 'hinhThucGiam',
+      title: "Hinh Thuc Giam",
+      dataIndex: "hinhThucGiam",
+      key: "hinhThucGiam",
     },
     {
-      title: 'Loai Voucher',
-      dataIndex: 'loaiVouCher',
-      key: 'loaiVouCher',
+      title: "Loai Voucher",
+      dataIndex: "loaiVouCher",
+      key: "loaiVouCher",
     },
     {
-      title: 'Ghi Chu',
-      dataIndex: 'ghiChu',
-      key: 'ghiChu',
+      title: "Ghi Chu",
+      dataIndex: "ghiChu",
+      key: "ghiChu",
     },
     {
-      title: 'Trang Thai',
-      dataIndex: 'trangThai',
-      key: 'trangThai',
+      title: "Trang Thai",
+      dataIndex: "trangThai",
+      key: "trangThai",
       render: (text, record) => (
         <Switch
           checked={text === 1} // Check if the status is active (1)
@@ -201,11 +229,13 @@ const VoucherManagement = () => {
       ),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (text, record) => (
         <>
-          <Button type="link" onClick={() => showUpdateModal(record)}>Sửa</Button>
+          <Button type="link" onClick={() => showUpdateModal(record)}>
+            Sửa
+          </Button>
         </>
       ),
     },
@@ -218,9 +248,11 @@ const VoucherManagement = () => {
 
   return (
     <div>
-      <h1>Voucher Management</h1>
+      <h1>Tạo Voucher giảm giá</h1>
 
-      <Button type="primary" onClick={showModal}>Create Voucher</Button>
+      <Button type="primary" onClick={showModal}>
+        Create Voucher
+      </Button>
 
       {/* Modal for creating/updating voucher */}
       <Modal
@@ -232,12 +264,20 @@ const VoucherManagement = () => {
         <Form form={form} onFinish={onSubmit} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="maVouCher" label="Ma Voucher" rules={[{ required: true }]}>
+              <Form.Item
+                name="maVouCher"
+                label="Ma Voucher"
+                rules={[{ required: true }]}
+              >
                 <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="tenVouCher" label="Ten Voucher" rules={[{ required: true }]}>
+              <Form.Item
+                name="tenVouCher"
+                label="Ten Voucher"
+                rules={[{ required: true }]}
+              >
                 <Input />
               </Form.Item>
             </Col>
@@ -256,55 +296,66 @@ const VoucherManagement = () => {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="soLuongMa" label="So Luong Ma" 
-              rules={[
-                {
+              <Form.Item
+                name="soLuongMa"
+                label="So Luong Ma"
+                rules={[
+                  {
                     required: true,
-                    message: 'Vui lòng nhập So Luong Ma!',
-                },
-                {
+                    message: "Vui lòng nhập So Luong Ma!",
+                  },
+                  {
                     validator: (_, value) =>
-                        value < 0
-                            ? Promise.reject('So Luong Ma không được âm!')
-                            : Promise.resolve(),
-                },
-            ]}>
+                      value < 0
+                        ? Promise.reject("So Luong Ma không được âm!")
+                        : Promise.resolve(),
+                  },
+                ]}
+              >
                 <InputNumber min={0} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="giaTriGiam" label="Gia Tri Giam"
-              rules={[
-                {
+              <Form.Item
+                name="giaTriGiam"
+                label="Gia Tri Giam"
+                rules={[
+                  {
                     required: true,
-                    message: 'Vui lòng nhập Gia Tri Giam!',
-                },
-                {
+                    message: "Vui lòng nhập Gia Tri Giam!",
+                  },
+                  {
                     validator: (_, value) =>
-                        value < 0
-                            ? Promise.reject('Gia Tri Giam không được âm!')
-                            : Promise.resolve(),
-                },
-            ]}>
+                      value < 0
+                        ? Promise.reject("Gia Tri Giam không được âm!")
+                        : Promise.resolve(),
+                  },
+                ]}
+              >
                 <InputNumber min={0} />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="dieuKienToiThieuHoaDon" label="Dieu Kien Toi Thieu Hoa Don"
-              rules={[
-                {
+              <Form.Item
+                name="dieuKienToiThieuHoaDon"
+                label="Dieu Kien Toi Thieu Hoa Don"
+                rules={[
+                  {
                     required: true,
-                    message: 'Dieu Kien Toi Thieu Hoa Don!',
-                },
-                {
+                    message: "Dieu Kien Toi Thieu Hoa Don!",
+                  },
+                  {
                     validator: (_, value) =>
-                        value < 0
-                            ? Promise.reject('Dieu Kien Toi Thieu Hoa Don không được âm!')
-                            : Promise.resolve(),
-                },
-            ]}>
+                      value < 0
+                        ? Promise.reject(
+                            "Dieu Kien Toi Thieu Hoa Don không được âm!"
+                          )
+                        : Promise.resolve(),
+                  },
+                ]}
+              >
                 <InputNumber min={0} />
               </Form.Item>
             </Col>

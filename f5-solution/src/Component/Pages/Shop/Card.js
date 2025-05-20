@@ -78,7 +78,7 @@ const Cart = () => {
     }, 1000);
   };
   const handleQuantityChange = async (value, record) => {
-    if (value <= 0) {
+    if (!value || value <= 0) {
       message.error("Số lượng phải lớn hơn 0");
       return;
     }
@@ -175,9 +175,15 @@ const Cart = () => {
                         >
                           <AiOutlineMinus size={16} />
                         </button>
-                        <span className="text-base font-semibold">
-                          {item.soLuong}
-                        </span>
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.soLuong}
+                          onChange={(e) =>
+                            handleQuantityChange(Number(e.target.value), item)
+                          }
+                          className="w-16 text-center border rounded px-2 py-1"
+                        />
                         <button
                           className="p-2 m-0 outline-none"
                           onClick={() =>
@@ -224,7 +230,7 @@ const Cart = () => {
                 {loading ? (
                   <svg
                     aria-hidden="true"
-                    class="w-4 h-4 text-white animate-spin fill-gray-500"
+                    className="w-4 h-4 text-white animate-spin fill-gray-500"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -251,7 +257,7 @@ const Cart = () => {
                   {loading ? (
                     <svg
                       aria-hidden="true"
-                      class="w-4 h-4 text-white animate-spin fill-gray-500"
+                      className="w-4 h-4 text-white animate-spin fill-gray-500"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -266,7 +272,7 @@ const Cart = () => {
                       />
                     </svg>
                   ) : (
-                    "Xem thông tin đơn hàng"
+                    "Lịch sử đặt hàng"
                   )}
                 </button>
                 <button
@@ -277,7 +283,7 @@ const Cart = () => {
                   {loading ? (
                     <svg
                       aria-hidden="true"
-                      class="w-4 h-4 text-white animate-spin fill-gray-500"
+                      className="w-4 h-4 text-white animate-spin fill-gray-500"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"

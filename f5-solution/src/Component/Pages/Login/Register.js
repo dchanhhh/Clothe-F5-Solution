@@ -71,7 +71,7 @@ const Register = () => {
 
   return (
     <div
-      className="relative flex items-center justify-center overflow-hidden bg-cover bg-center h-[100vh]"
+      className="relative flex items-center justify-center overflow-hidden bg-cover bg-center p-10"
       style={{
         backgroundImage: `url(${BackgroundImage})`,
       }}
