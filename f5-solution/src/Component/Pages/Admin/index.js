@@ -213,17 +213,17 @@ const Dashboard = () => {
             <Menu.Item key="3-1" onClick={() => handleMenuClick("3-1")}>
               Quản lý hóa đơn
             </Menu.Item>
-            <Menu.Item key="3-2" onClick={() => handleMenuClick("3-2")}>
+            {/* <Menu.Item key="3-2" onClick={() => handleMenuClick("3-2")}>
               Bán tại quầy
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu.ItemGroup>
 
           <Menu.ItemGroup key="g4" title="Tài khoản" icon={<TeamOutlined />}>
-            <Menu.Item key="4-1" onClick={() => handleMenuClick("4-1")}>
+            {/* <Menu.Item key="4-1" onClick={() => handleMenuClick("4-1")}>
               Nhân viên
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item key="4-2" onClick={() => handleMenuClick("4-2")}>
-              Khách hàng
+              Quản lý khách hàng
             </Menu.Item>
           </Menu.ItemGroup>
 
@@ -232,7 +232,7 @@ const Dashboard = () => {
                             Quản lý sản phẩm giảm giá
                         </Menu.Item> */}
             <Menu.Item key="5-2" onClick={() => handleMenuClick("5-2")}>
-              Quản lý voucher giảm giá
+              Quản lý Voucher
             </Menu.Item>
           </Menu.ItemGroup>
           {renderLoginLogoutButton()}

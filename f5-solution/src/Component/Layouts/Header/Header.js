@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { FiShoppingCart } from "react-icons/fi";
+import { IoIosSearch } from "react-icons/io";
 import { GoPerson } from "react-icons/go";
 import { MdOutlineLogout } from "react-icons/md";
-import { message } from "antd";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import HomeView from "../../../Service/HomeService";
+import SearchResults from "../../Pages/Shop/SearchResults";
 
 const listMenus = [
   { path: "/", title: "Cửa hàng" },
@@ -19,6 +21,10 @@ const HeaderF5 = () => {
   const [activeMenu, setActiveMenu] = useState("/");
   const [userProfile, setUserProfile] = useState({});
   const [MaKh, setMaKhachHang] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [products, setProducts] = useState([]);
   const storedUser = localStorage.getItem("user");
   const user = JSON.parse(storedUser);
 
@@ -31,6 +37,18 @@ const HeaderF5 = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await HomeView.ViewProductHome();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   // Xử lý đăng nhập
   const handleLoginClick = () => {
     navigate("/login");
@@ -41,19 +59,21 @@ const HeaderF5 = () => {
     const storedUser = JSON.parse(localStorage.getItem("user")); // Parse dữ liệu từ localStorage
     // Kiểm tra nếu người dùng không đăng nhập
     if (!storedUser || !storedUser.TaiKhoan) {
-      message.info("Vui lòng đăng nhập để xem giỏ hàng");
+      alert("Vui lòng đăng nhập để xem giỏ hàng");
       navigate("/Login");
     } else {
       // Điều hướng đến giỏ hàng của người dùng đã đăng nhập
       navigate(`/cart/${storedUser.TaiKhoan}`);
     }
   };
+
   const handleLogoutClick = () => {
     // Xử lý đăng xuất
     localStorage.removeItem("user");
     setUserName(null); // Reset lại state username
     navigate("/"); // Điều hướng tới trang chủ sau khi đăng xuất
   };
+
   const handleProfileClick = () => {
     const storedUser = localStorage.getItem("user");
     const user = JSON.parse(storedUser);
@@ -67,9 +87,38 @@ const HeaderF5 = () => {
     navigate(path); // Điều hướng đến đường dẫn tương ứng với path
   };
 
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    if (!value.trim()) {
+      setSearchResults([]);
+      setShowResults(false);
+      return;
+    }
+
+    const filteredProducts = products.filter((product) =>
+      product.tenSp.toLowerCase().includes(value.toLowerCase())
+    );
+    setSearchResults(filteredProducts);
+    setShowResults(true);
+  };
+
   useEffect(() => {
     setActiveMenu(location.pathname); // Cập nhật activeMenu theo path hiện tại
   }, [location.pathname]);
+
+  // Click outside to close search results
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".search-container")) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="flex items-center bg-white justify-between px-12 h-[60px]">
@@ -99,8 +148,22 @@ const HeaderF5 = () => {
       </div>
 
       {/* Thanh tìm kiếm */}
-      <div>
-        <input placeholder="Search" />
+      <div className="relative w-72 search-container">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            onFocus={() => setShowResults(true)}
+            className="w-full pl-10 pr-4 rounded-full border-2 focus:outline-none focus:border-primary"
+          />
+          <IoIosSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+        </div>
+        <SearchResults
+          products={searchResults}
+          visible={showResults && searchTerm.trim() !== ""}
+        />
       </div>
 
       {/* Phần giỏ hàng và thông tin tài khoản */}

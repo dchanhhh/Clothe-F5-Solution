@@ -34,10 +34,31 @@ const f5Blogs = [
   },
 ];
 
+const ProductSkeleton = () => (
+  <div className="product-card relative flex flex-col bg-white rounded-xl">
+    <div className="w-full h-[420px] bg-gray-200 animate-pulse rounded-t-lg"></div>
+    <div className="flex flex-col h-[80px] gap-2 p-3 items-center justify-center w-full">
+      <div className="h-4 w-3/4 bg-gray-200 animate-pulse rounded"></div>
+      <div className="h-4 w-1/2 bg-gray-200 animate-pulse rounded"></div>
+    </div>
+  </div>
+);
+
+const SkeletonSlider = () => (
+  <div className="grid grid-cols-5 gap-4">
+    {[1, 2, 3, 4, 5].map((index) => (
+      <ProductSkeleton key={index} />
+    ))}
+  </div>
+);
+
 const Home = () => {
   const navigate = useNavigate();
   const [TaiKhoan, setUsername] = useState(null);
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -47,16 +68,30 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchNewProducts = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const data = await HomeView.ViewProductHome();
-        setProducts(data); // Cập nhật danh sách sản phẩm mới từ API
+        if (isMounted) {
+          setProducts(data);
+        }
       } catch (error) {
-        message.error(error || "Không thể tải danh sách sản phẩm.");
+        if (isMounted) {
+          setError(error.message || "Không thể tải danh sách sản phẩm.");
+          console.error("Error fetching products:", error);
+        }
       } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     fetchNewProducts();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const listDamProducts = products.filter(
@@ -72,6 +107,7 @@ const Home = () => {
   const handleViewMore = (id) => {
     navigate(`/Products/${id}`);
   };
+
   return (
     <>
       <HeaderF5 />
@@ -156,46 +192,54 @@ const Home = () => {
 
         <div className="flex flex-col gap-6">
           <span className="text-2xl text-center font-bold">SẢN PHẨM MỚI</span>
-          <Swiper
-            className="mySwiper swiper-slide rounded-xl"
-            slidesPerView={5}
-            slidesPerGroup={1}
-            spaceBetween={12}
-            navigation={true}
-            loop={true}
-            modules={[Autoplay, Navigation]}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-          >
-            {products.map((product) => (
-              <SwiperSlide
-                key={product.id}
-                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
-              >
-                <img
-                  alt={product.tenSp}
-                  src={product.imageDefaul}
-                  className="w-full h-full object-cover"
-                />
-                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-sm font-bold uppercase ">
-                    {product.tenSp}
-                  </span>
-                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
-                </div>
-                <div className="overlay">
-                  <button
-                    className="view-more-button"
-                    onClick={() => handleViewMore(product.id)}
-                  >
-                    Xem thêm
-                  </button>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {error ? (
+            <div className="text-center text-red-500 py-4">{error}</div>
+          ) : isLoading ? (
+            <SkeletonSlider />
+          ) : (
+            <Swiper
+              className="mySwiper swiper-slide rounded-xl"
+              slidesPerView={5}
+              slidesPerGroup={1}
+              spaceBetween={12}
+              navigation={true}
+              loop={products.length >= 5}
+              modules={[Autoplay, Navigation]}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+            >
+              {products.map((product) => (
+                <SwiperSlide
+                  key={product.id}
+                  className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
+                >
+                  <img
+                    alt={product.tenSp}
+                    src={product.imageDefaul}
+                    className="w-full h-[300px] object-cover"
+                  />
+                  <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                    <span className="text-sm font-bold uppercase">
+                      {product.tenSp}
+                    </span>
+                    <span className="text-sm font-bold text-primary">
+                      {`${product.giaBan.toLocaleString()} VNĐ`}
+                    </span>
+                  </div>
+                  <div className="overlay">
+                    <button
+                      className="view-more-button"
+                      onClick={() => handleViewMore(product.id)}
+                    >
+                      Xem thêm
+                    </button>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
 
         <Swiper
@@ -245,46 +289,52 @@ const Home = () => {
           <span className="text-2xl text-center font-bold">
             SẢN PHẨM GIÁ TỐT
           </span>
-          <Swiper
-            className="mySwiper swiper-slide rounded-xl"
-            slidesPerView={5}
-            slidesPerGroup={1}
-            spaceBetween={12}
-            navigation={true}
-            loop={true}
-            modules={[Autoplay, Navigation]}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-          >
-            {listDamProducts.map((product) => (
-              <SwiperSlide
-                key={product.id}
-                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
-              >
-                <img
-                  alt={product.tenSp}
-                  src={product.imageDefaul}
-                  className="w-full h-full object-cover"
-                />
-                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-sm font-bold uppercase ">
-                    {product.tenSp}
-                  </span>
-                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
-                </div>
-                <div className="overlay">
-                  <button
-                    className="view-more-button"
-                    onClick={() => handleViewMore(product.id)}
-                  >
-                    Xem thêm
-                  </button>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {error ? (
+            <div className="text-center text-red-500 py-4">{error}</div>
+          ) : isLoading ? (
+            <SkeletonSlider />
+          ) : (
+            <Swiper
+              className="mySwiper swiper-slide rounded-xl"
+              slidesPerView={5}
+              slidesPerGroup={1}
+              spaceBetween={12}
+              navigation={true}
+              loop={true}
+              modules={[Autoplay, Navigation]}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+            >
+              {listDamProducts.map((product) => (
+                <SwiperSlide
+                  key={product.id}
+                  className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
+                >
+                  <img
+                    alt={product.tenSp}
+                    src={product.imageDefaul}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                    <span className="text-sm font-bold uppercase ">
+                      {product.tenSp}
+                    </span>
+                    <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
+                  </div>
+                  <div className="overlay">
+                    <button
+                      className="view-more-button"
+                      onClick={() => handleViewMore(product.id)}
+                    >
+                      Xem thêm
+                    </button>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
 
         <Swiper
@@ -334,46 +384,52 @@ const Home = () => {
           <span className="text-2xl text-center font-bold">
             CÁC MẪU ÁO NỔI BẬT
           </span>
-          <Swiper
-            className="mySwiper swiper-slide rounded-xl"
-            slidesPerView={5}
-            slidesPerGroup={1}
-            spaceBetween={12}
-            navigation={true}
-            loop={true}
-            modules={[Autoplay, Navigation]}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-          >
-            {listAoProducts.map((product) => (
-              <SwiperSlide
-                key={product.id}
-                className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
-              >
-                <img
-                  alt={product.tenSp}
-                  src={product.imageDefaul}
-                  className="w-full h-full object-cover"
-                />
-                <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
-                  <span className="text-sm font-bold uppercase ">
-                    {product.tenSp}
-                  </span>
-                  <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
-                </div>
-                <div className="overlay">
-                  <button
-                    className="view-more-button"
-                    onClick={() => handleViewMore(product.id)}
-                  >
-                    Xem thêm
-                  </button>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {error ? (
+            <div className="text-center text-red-500 py-4">{error}</div>
+          ) : isLoading ? (
+            <SkeletonSlider />
+          ) : (
+            <Swiper
+              className="mySwiper swiper-slide rounded-xl"
+              slidesPerView={5}
+              slidesPerGroup={1}
+              spaceBetween={12}
+              navigation={true}
+              loop={true}
+              modules={[Autoplay, Navigation]}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+            >
+              {listAoProducts.map((product) => (
+                <SwiperSlide
+                  key={product.id}
+                  className="product-card relative flex flex-col bg-white rounded-xl border-2 border-gray-300"
+                >
+                  <img
+                    alt={product.tenSp}
+                    src={product.imageDefaul}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="flex flex-col gap-2 p-3 items-center border-t w-full border-t-gray-300">
+                    <span className="text-sm font-bold uppercase ">
+                      {product.tenSp}
+                    </span>
+                    <span className="text-sm font-bold text-primary">{`${product.giaBan.toLocaleString()} VNĐ`}</span>
+                  </div>
+                  <div className="overlay">
+                    <button
+                      className="view-more-button"
+                      onClick={() => handleViewMore(product.id)}
+                    >
+                      Xem thêm
+                    </button>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
 
         <div className="flex flex-col gap-6 px-40">
