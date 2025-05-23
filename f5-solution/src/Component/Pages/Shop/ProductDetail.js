@@ -11,12 +11,11 @@ import HeaderF5 from "../../Layouts/Header/Header";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 
-const ProductDetail = () => {
+const ProductDetail = ({ products: propsProducts = [] }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [TaiKhoan, setUsername] = useState("");
-  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mainImage, setMainImage] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -30,6 +29,7 @@ const ProductDetail = () => {
   const [userId, setUserId] = useState(null);
   const [filteredSizes, setfilteredSizes] = useState("");
   const [soLuong, setSoluong] = useState(0);
+  const [products, setProducts] = useState(propsProducts);
 
   const visibleImages = 3;
   useEffect(() => {
@@ -51,15 +51,15 @@ const ProductDetail = () => {
   }, [product]);
 
   useEffect(() => {
-    const fetchNewProducts = async () => {
-      try {
-        const data = await HomeView.ViewProductHome();
-        setProducts(data);
-      } catch (error) {
-        message.error(error || "Không thể tải danh sách sản phẩm.");
-      }
-    };
-    fetchNewProducts();
+    if (propsProducts && propsProducts.length > 0) {
+      setProducts(propsProducts);
+    }
+  }, [propsProducts]);
+
+  useEffect(() => {
+    if (!products || products.length === 0) {
+      HomeView.ViewProductHome().then(setProducts).catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
@@ -67,12 +67,9 @@ const ProductDetail = () => {
       if (!id) {
         return;
       }
-
       setLoading(true);
-
       try {
         const data = await HomeView.ViewProductDetail(id);
-        console.log(data);
         if (data) {
           const convertData = {
             ...data,
@@ -84,7 +81,6 @@ const ProductDetail = () => {
           message.error("Lỗi: Không có dữ liệu sản phẩm.");
         }
       } catch (error) {
-        console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
         setProduct(null);
         message.error("Lỗi khi lấy chi tiết sản phẩm.");
       } finally {

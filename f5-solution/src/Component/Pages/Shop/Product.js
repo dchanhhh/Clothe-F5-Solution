@@ -11,12 +11,12 @@ import HomeView from "../../../Service/HomeService";
 import HeaderF5 from "../../Layouts/Header/Header";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 
-const ProductPage = () => {
+const ProductPage = ({ products: propsProducts = [] }) => {
   const navigate = useNavigate();
   const [TaiKhoan, setUsername] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(propsProducts);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSize, setSelectedSize] = useState("all");
@@ -25,7 +25,6 @@ const ProductPage = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [showSubMenu, setShowSubMenu] = useState();
-  // const [selectedHomeView, setSelectedHome] = useState('all');
   const productsPerPage = 8;
 
   const handleShowSubMenu = (mainMenu) => {
@@ -33,20 +32,8 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
-    const fetchNewProducts = async () => {
-      setLoading(true);
-      try {
-        const data = await HomeView.ViewProductHome();
-        setProducts(data);
-        setCategories(getCategories(data));
-      } catch (error) {
-        alert(error || "Không thể tải danh sách sản phẩm.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNewProducts();
-  }, []);
+    setCategories(getCategories(products));
+  }, [products]);
 
   const getCategories = (products) => {
     const categoryGroups = {
@@ -179,6 +166,24 @@ const ProductPage = () => {
 
   const handlePriceChange = (value) => setSelectedPrice(value);
 
+  // Nếu propsProducts thay đổi (từ Home truyền sang), cập nhật state
+  useEffect(() => {
+    if (propsProducts && propsProducts.length > 0) {
+      setProducts(propsProducts);
+    }
+  }, [propsProducts]);
+
+  // Nếu products rỗng, tự fetch API
+  useEffect(() => {
+    if (!products || products.length === 0) {
+      setLoading(true);
+      HomeView.ViewProductHome().then((data) => {
+        setProducts(data);
+        setLoading(false);
+      }).catch(() => setLoading(false));
+    }
+  }, []);
+
   return (
     <>
       <HeaderF5 />
@@ -227,11 +232,6 @@ const ProductPage = () => {
             />
           </SwiperSlide>
         </Swiper>
-        {/* <div className="flex gap-1 p-4">
-        <span>Sản phẩm</span>
-        <span>/</span>
-        <span>{selectedCategory}</span>
-      </div> */}
         <div className="flex gap-5 justify-between pt-8">
           <div className="w-1/5 h-full p-4 bg-white rounded-xl">
             <div className="flex flex-col gap-2">

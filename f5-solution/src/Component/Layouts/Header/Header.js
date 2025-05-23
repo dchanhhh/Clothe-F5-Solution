@@ -4,27 +4,22 @@ import { IoIosSearch } from "react-icons/io";
 import { GoPerson } from "react-icons/go";
 import { MdOutlineLogout } from "react-icons/md";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import HomeView from "../../../Service/HomeService";
 import SearchResults from "../../Pages/Shop/SearchResults";
 
 const listMenus = [
   { path: "/", title: "Cửa hàng" },
   { path: "/Products", title: "Sản phẩm" },
-  { path: "/album", title: "Bộ sưu tập" },
   { path: "/contact", title: "Liên hệ" },
 ];
 
-const HeaderF5 = () => {
+const HeaderF5 = ({ products = [] }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [userName, setUserName] = useState(null);
   const [activeMenu, setActiveMenu] = useState("/");
-  const [userProfile, setUserProfile] = useState({});
-  const [MaKh, setMaKhachHang] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const [products, setProducts] = useState([]);
   const storedUser = localStorage.getItem("user");
   const user = JSON.parse(storedUser);
 
@@ -35,18 +30,6 @@ const HeaderF5 = () => {
       const user = JSON.parse(storedUser);
       setUserName(user.userName);
     }
-  }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await HomeView.ViewProductHome();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
   }, []);
 
   // Xử lý đăng nhập

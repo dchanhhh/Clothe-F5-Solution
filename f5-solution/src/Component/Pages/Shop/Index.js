@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import HomeView from "../../../Service/HomeService";
@@ -110,7 +109,7 @@ const Home = () => {
 
   return (
     <>
-      <HeaderF5 />
+      <HeaderF5 products={products} />
       <div className="flex flex-col gap-6 px-6 pt-6 pb-20 bg-[#f5f5f5]">
         <Swiper
           className="mySwiper rounded-xl"
@@ -472,6 +471,9 @@ const Home = () => {
           </Swiper>
         </div>
       </div>
+      {/* Nếu có route hoặc render ProductDetail hoặc ProductPage thì truyền products={products} */}
+      {/* <ProductDetail products={products} /> */}
+      {/* <ProductPage products={products} /> */}
     </>
   );
 };
