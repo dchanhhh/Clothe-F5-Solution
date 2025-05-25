@@ -105,7 +105,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex gap-5 min-h-screen bg-[#f5f5f5] text-sm">
-      <div className="bg-white flex flex-col gap-2 h-screen w-64 shadow-lg rounded-r-xl">
+      <div className="bg-white flex flex-col gap-2 h-screen min-w-[240px] shadow-lg rounded-r-xl">
         <div className="flex justify-center gap-2 text-2xl font-bold py-4">
           <span className="text-orange-500">F5</span>
           <span>FASHION</span>
@@ -257,11 +257,9 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <Layout>
-        <Content className="m-6 p-6 bg-white rounded-lg">
-          {currentContent}
-        </Content>
-      </Layout>
+      <div className="w-full bg-[#f5f5f5] text-sm">
+        <div className="p-6 bg-white rounded-l-xl">{currentContent}</div>
+      </div>
     </div>
   );
 };
