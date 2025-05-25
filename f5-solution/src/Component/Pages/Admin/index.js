@@ -1,25 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  AppstoreOutlined,
-  ShoppingCartOutlined,
-  FileTextOutlined,
-  TeamOutlined,
-  TagsOutlined,
-} from "@ant-design/icons";
-import {
-  Avatar,
-  Button,
-  Layout,
-  Menu,
-  theme,
-  ConfigProvider,
-  message,
-} from "antd";
+import { Layout, theme } from "antd";
 import StatisticsPage from "./StatisticsPage";
 import VoucherManagement from "./VoucherManagement";
-import logo from "../../../assets/images/Logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import NhanVienPage from "./NhanVienPage";
 import KhachHangPage from "./KhachHangPage";
@@ -37,17 +19,16 @@ import ProductManagement from "./ProductManagement";
 import AuthService from "../../../Service/AuthService";
 import jwtDecode from "jwt-decode";
 
-const { Header, Sider, Content } = Layout;
-const { SubMenu } = Menu;
+const { Content } = Layout;
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
   const [currentContent, setCurrentContent] = useState(<StatisticsPage />);
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
   );
+  const [activeMenuItem, setActiveMenuItem] = useState("1-1");
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -60,50 +41,51 @@ const Dashboard = () => {
   }, [location]);
 
   const handleMenuClick = (key) => {
+    setActiveMenuItem(key);
     switch (key) {
-      case "1-1":
+      case "ThongKe":
         setCurrentContent(<StatisticsPage />);
         break;
-      case "2-1":
+      case "SanPham":
         setCurrentContent(<ProductManagement />);
         break;
-      case "5-2":
+      case "Voucher":
         setCurrentContent(<VoucherManagement />);
         break;
-      case "4-1":
+      case "NhanVien":
         setCurrentContent(<NhanVienPage />);
         break;
-      case "4-2":
+      case "KhachHang":
         setCurrentContent(<KhachHangPage />);
         break;
-      case "2-3-1":
+      case "MauSac":
         setCurrentContent(<ColorManager />);
         break;
-      case "2-3-2":
+      case "KichCo":
         setCurrentContent(<SizeManagement />);
         break;
-      case "2-3-3":
+      case "ChatLieu":
         setCurrentContent(<MaterialManagement />);
         break;
-      case "2-3-4":
+      case "XuatXu":
         setCurrentContent(<OriginalManagement />);
         break;
-      case "2-3-5":
+      case "DanhMuc":
         setCurrentContent(<CategoriesManagement />);
         break;
-      case "2-3-6":
+      case "ThuongHieu":
         setCurrentContent(<Brandmanagement />);
         break;
-      case "2-3-7":
+      case "HinhAnh":
         setCurrentContent(<ImageManagement />);
         break;
-      case "3-1":
+      case "HoaDon":
         setCurrentContent(<InvoiceManagement />);
         break;
       case "3-2":
         setCurrentContent(<CounterSale />);
         break;
-      case "4-1":
+      case "NhanVien":
         setCurrentContent(<EmployeeManagement />);
         break;
       default:
@@ -113,167 +95,174 @@ const Dashboard = () => {
 
   const handleLoginLogout = () => {
     if (isAuthenticated) {
-      // Đăng xuất
       setIsAuthenticated(false);
       localStorage.removeItem("token");
-      message.info("Bạn đã đăng xuất.");
+      navigate("/LoginAdmin");
     } else {
-      // Điều hướng đến trang đăng nhập
       navigate("/LoginAdmin");
     }
   };
 
-  const renderLoginLogoutButton = () => {
-    if (isAuthenticated) {
-      return (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Button type="primary" onClick={handleLoginLogout}>
-            Đăng xuất
-          </Button>
-        </div>
-      );
-    } else {
-      return (
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Button type="primary" onClick={() => navigate("/LoginAdmin")}>
-            Đăng nhập
-          </Button>
-        </div>
-      );
-    }
-  };
-
   return (
-    <Layout className="dashboard-layout">
-      <ConfigProvider
-        theme={{
-          Layout: {
-            siderBg: "red",
-          },
-        }}
-      />
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-        >
-          <Avatar src={logo} size={200} />
-          <h2 style={{ textAlign: "center", margin: 0 }}>F5 Fashion</h2>
-          <hr style={{ width: "100%", marginTop: "5px" }} />
+    <div className="flex gap-5 min-h-screen bg-[#f5f5f5] text-sm">
+      <div className="bg-white flex flex-col gap-2 h-screen w-64 shadow-lg rounded-r-xl">
+        <div className="flex justify-center gap-2 text-2xl font-bold py-4">
+          <span className="text-orange-500">F5</span>
+          <span>FASHION</span>
         </div>
-        <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
-          <Menu.ItemGroup
-            key="g1"
-            title="Tổng quan"
-            icon={<AppstoreOutlined />}
+
+        <div className="px-4">
+          <div className="text-sm font-medium text-gray-600 mb-2">
+            Tổng quan
+          </div>
+          <div
+            className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+              activeMenuItem === "ThongKe"
+                ? "bg-gray-100 text-blue-600 font-semibold"
+                : ""
+            }`}
+            onClick={() => handleMenuClick("ThongKe")}
           >
-            <Menu.Item key="1-1" onClick={() => handleMenuClick("1-1")}>
-              Thống kê
-            </Menu.Item>
-          </Menu.ItemGroup>
+            <span className="text-base">📊</span>
+            <span>Thống kê</span>
+          </div>
+        </div>
 
-          <Menu.ItemGroup
-            key="g2"
-            title="Sản phẩm"
-            icon={<ShoppingCartOutlined />}
+        <div className="px-4">
+          <div className="text-sm font-medium text-gray-600 mb-2">Sản phẩm</div>
+          <div className="flex flex-col gap-1">
+            <div
+              className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+                activeMenuItem === "SanPham"
+                  ? "bg-gray-100 text-blue-600 font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleMenuClick("SanPham")}
+            >
+              <span className="text-base">📦</span>
+              <span>Quản lý sản phẩm</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+                activeMenuItem === "MauSac"
+                  ? "bg-gray-100 text-blue-600 font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleMenuClick("MauSac")}
+            >
+              <span className="text-base">🎨</span>
+              <span>Quản lý màu sắc</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+                activeMenuItem === "KichCo"
+                  ? "bg-gray-100 text-blue-600 font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleMenuClick("KichCo")}
+            >
+              <span className="text-base">📏</span>
+              <span>Quản lý kích cỡ</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+                activeMenuItem === "ChatLieu"
+                  ? "bg-gray-100 text-blue-600 font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleMenuClick("ChatLieu")}
+            >
+              <span className="text-base">🧵</span>
+              <span>Quản lý chất liệu</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+                activeMenuItem === "DanhMuc"
+                  ? "bg-gray-100 text-blue-600 font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleMenuClick("DanhMuc")}
+            >
+              <span className="text-base">🗂️</span>
+              <span>Quản lý danh mục</span>
+            </div>
+            <div
+              className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+                activeMenuItem === "HinhAnh"
+                  ? "bg-gray-100 text-blue-600 font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleMenuClick("HinhAnh")}
+            >
+              <span className="text-base">🖼️</span>
+              <span>Quản lý hình ảnh</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-4">
+          <div className="text-sm font-medium text-gray-600 mb-2">Hóa đơn</div>
+          <div
+            className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+              activeMenuItem === "HoaDon"
+                ? "bg-gray-100 text-blue-600 font-semibold"
+                : ""
+            }`}
+            onClick={() => handleMenuClick("HoaDon")}
           >
-            <Menu.Item key="2-1" onClick={() => handleMenuClick("2-1")}>
-              Quản lý sản phẩm
-            </Menu.Item>
-            <SubMenu key="sub1" title="Quản lý thuộc tính">
-              <Menu.Item key="2-3-1" onClick={() => handleMenuClick("2-3-1")}>
-                Quản lý màu sắc
-              </Menu.Item>
-              <Menu.Item key="2-3-2" onClick={() => handleMenuClick("2-3-2")}>
-                Quản lý kích cỡ
-              </Menu.Item>
-              <Menu.Item key="2-3-3" onClick={() => handleMenuClick("2-3-3")}>
-                Quản lý chất liệu
-              </Menu.Item>
-              {/* <Menu.Item key="2-3-4" onClick={() => handleMenuClick("2-3-4")}>
-                Quản lý xuất xứ
-              </Menu.Item> */}
-              <Menu.Item key="2-3-5" onClick={() => handleMenuClick("2-3-5")}>
-                Quản lý danh mục
-              </Menu.Item>
-              {/* <Menu.Item key="2-3-6" onClick={() => handleMenuClick("2-3-6")}>
-                Quản lý thương hiệu
-              </Menu.Item> */}
-              <Menu.Item key="2-3-7" onClick={() => handleMenuClick("2-3-7")}>
-                Quản lý hình ảnh
-              </Menu.Item>
-            </SubMenu>
-          </Menu.ItemGroup>
+            <span className="text-base">📄</span>
+            <span>Quản lý hóa đơn</span>
+          </div>
+        </div>
 
-          <Menu.ItemGroup key="g3" title="Hóa đơn" icon={<FileTextOutlined />}>
-            <Menu.Item key="3-1" onClick={() => handleMenuClick("3-1")}>
-              Quản lý hóa đơn
-            </Menu.Item>
-            {/* <Menu.Item key="3-2" onClick={() => handleMenuClick("3-2")}>
-              Bán tại quầy
-            </Menu.Item> */}
-          </Menu.ItemGroup>
+        <div className="px-4">
+          <div className="text-sm font-medium text-gray-600 mb-2">
+            Khách hàng
+          </div>
+          <div
+            className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+              activeMenuItem === "KhachHang"
+                ? "bg-gray-100 text-blue-600 font-semibold"
+                : ""
+            }`}
+            onClick={() => handleMenuClick("KhachHang")}
+          >
+            <span className="text-base">👥</span>
+            <span>Quản lý khách hàng</span>
+          </div>
+        </div>
 
-          <Menu.ItemGroup key="g4" title="Tài khoản" icon={<TeamOutlined />}>
-            {/* <Menu.Item key="4-1" onClick={() => handleMenuClick("4-1")}>
-              Nhân viên
-            </Menu.Item> */}
-            <Menu.Item key="4-2" onClick={() => handleMenuClick("4-2")}>
-              Quản lý khách hàng
-            </Menu.Item>
-          </Menu.ItemGroup>
+        <div className="px-4">
+          <div className="text-sm font-medium text-gray-600 mb-2">
+            Khuyến mại
+          </div>
+          <div
+            className={`flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200 cursor-pointer ${
+              activeMenuItem === "Voucher"
+                ? "bg-gray-100 text-blue-600 font-semibold"
+                : ""
+            }`}
+            onClick={() => handleMenuClick("Voucher")}
+          >
+            <span className="text-base">🏷️</span>
+            <span>Quản lý Voucher</span>
+          </div>
+        </div>
 
-          <Menu.ItemGroup key="g5" title="Khuyến mại" icon={<TagsOutlined />}>
-            {/* <Menu.Item key="5-1" onClick={() => handleMenuClick('5-1')}>
-                            Quản lý sản phẩm giảm giá
-                        </Menu.Item> */}
-            <Menu.Item key="5-2" onClick={() => handleMenuClick("5-2")}>
-              Quản lý Voucher
-            </Menu.Item>
-          </Menu.ItemGroup>
-          {renderLoginLogoutButton()}
-        </Menu>
-      </Sider>
+        <div
+          className="mx-4 mb-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-center cursor-pointer"
+          onClick={handleLoginLogout}
+        >
+          {isAuthenticated ? "Đăng xuất" : "Đăng nhập"}
+        </div>
+      </div>
+
       <Layout>
-        <ConfigProvider
-          theme={{
-            Layout: {
-              siderBg: "red",
-            },
-          }}
-        />
-        {/* <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
-          />
-        </Header> */}
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
-        >
+        <Content className="m-6 p-6 bg-white rounded-lg">
           {currentContent}
         </Content>
       </Layout>
-    </Layout>
+    </div>
   );
 };
 
