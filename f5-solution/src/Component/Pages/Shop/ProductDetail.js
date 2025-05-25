@@ -30,6 +30,7 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
   const [filteredSizes, setfilteredSizes] = useState("");
   const [soLuong, setSoluong] = useState(0);
   const [products, setProducts] = useState(propsProducts);
+  const [allProducts, setAllProducts] = useState([]);
 
   const visibleImages = 3;
   useEffect(() => {
@@ -380,13 +381,20 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
   const uniqueColors = Array.from(uniqueColorsMap.values());
   const uniqueSizes = Array.from(uniqueSizesMap.values());
 
+  useEffect(() => {
+    // Fetch all products for search functionality
+    HomeView.ViewProductHome().then((data) => {
+      setAllProducts(data);
+    });
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="bg-[#f5f5f5]">
-      <HeaderF5 />
+      <HeaderF5 products={allProducts} />
       <div className="flex flex-col gap-10 pt-5 pb-12 mx-[12%]">
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-2 max-h-[600px] overflow-y-auto">

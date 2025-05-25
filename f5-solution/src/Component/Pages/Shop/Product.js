@@ -186,7 +186,7 @@ const ProductPage = ({ products: propsProducts = [] }) => {
 
   return (
     <>
-      <HeaderF5 />
+      <HeaderF5 products={products} />
       <div className="bg-[#f5f5f5] p-6">
         <Swiper
           className="mySwiper rounded-xl"

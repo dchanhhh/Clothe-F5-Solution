@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderF5 from "../../Layouts/Header/Header";
 import { SlLocationPin } from "react-icons/sl";
 import { LuPhone } from "react-icons/lu";
 import { PiUserCircleThin } from "react-icons/pi";
 import { TfiEmail } from "react-icons/tfi";
+import HomeView from "../../../Service/HomeService";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const ContactPage = () => {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,10 +52,17 @@ const ContactPage = () => {
     }, 1500);
   };
 
+  useEffect(() => {
+    // Fetch products for search functionality
+    HomeView.ViewProductHome().then((data) => {
+      setProducts(data);
+    });
+  }, []);
+
   return (
     <div>
       {/* Header */}
-      <HeaderF5 />
+      <HeaderF5 products={products} />
 
       {/* Banner */}
       <div className="flex flex-col gap-3 items-center justify-center bg-[#f0f2f5] py-[30px]">

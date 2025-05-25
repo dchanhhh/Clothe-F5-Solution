@@ -23,6 +23,16 @@ const HeaderF5 = ({ products = [] }) => {
   const storedUser = localStorage.getItem("user");
   const user = JSON.parse(storedUser);
 
+  // Thêm hàm chuyển đổi tiếng Việt sang không dấu
+  const removeDiacritics = (str) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .toLowerCase();
+  };
+
   useEffect(() => {
     // Kiểm tra thông tin người dùng từ localStorage
     const storedUser = localStorage.getItem("user");
@@ -78,8 +88,9 @@ const HeaderF5 = ({ products = [] }) => {
       return;
     }
 
+    const searchValue = removeDiacritics(value);
     const filteredProducts = products.filter((product) =>
-      product.tenSp.toLowerCase().includes(value.toLowerCase())
+      removeDiacritics(product.tenSp).includes(searchValue)
     );
     setSearchResults(filteredProducts);
     setShowResults(true);

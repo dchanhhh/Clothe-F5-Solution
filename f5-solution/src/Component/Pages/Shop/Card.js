@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import CustomHeader from "../../Layouts/Header/Header"; // Import CustomHeader
 import GioHangService from "../../../Service/GiohangService";
+import HomeView from "../../../Service/HomeService";
 import "./Home.css";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 
@@ -12,6 +13,14 @@ const Cart = () => {
   const [userId, setUserId] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch products for search functionality
+    HomeView.ViewProductHome().then((data) => {
+      setProducts(data);
+    });
+  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -105,7 +114,7 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
-      <CustomHeader username={username} handleLogout={handleLogout} />
+      <CustomHeader username={username} handleLogout={handleLogout} products={products} />
       <div className="bg-white rounded-xl my-6 mx-[12%]">
         {cartItems.length === 0 ? (
           <div className="flex flex-col items-center gap-5 p-10">

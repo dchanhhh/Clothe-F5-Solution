@@ -5,6 +5,7 @@ import AuthService from "../../../Service/AuthService";
 import HeaderF5 from "../../Layouts/Header/Header";
 import DiaChiService from "../../../Service/DiaChiService";
 import AddressFormModal from "./AddressForm";
+import HomeView from "../../../Service/HomeService";
 
 const Profile = () => {
   const [TaiKhoan, setUsername] = useState(null);
@@ -20,6 +21,7 @@ const Profile = () => {
   const user = JSON.parse(storedUser);
   const maKh = user.MaKh;
   const idKh = user.IdKhachhang;
+  const [products, setProducts] = useState([]);
 
   const handleOpenModal = () => {
     setIsModalVisible(true);
@@ -38,6 +40,13 @@ const Profile = () => {
     } else {
       alert("Không tìm thấy thông tin người dùng.");
     }
+  }, []);
+
+  useEffect(() => {
+    // Fetch products for search functionality
+    HomeView.ViewProductHome().then((data) => {
+      setProducts(data);
+    });
   }, []);
 
   const handleSelectAddress = (id) => {
@@ -176,7 +185,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <HeaderF5 />
+      <HeaderF5 products={products} />
       <div className="container mx-auto py-10 px-8 flex gap-3">
         <div className="flex flex-col gap-5 flex-1">
           <span className="text-2xl font-bold text-center">

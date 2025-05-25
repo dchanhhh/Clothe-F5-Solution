@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderF5 from "../../Layouts/Header/Header";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import HomeView from "../../../Service/HomeService";
 
 const ViewOrderInformation = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const ViewOrderInformation = () => {
   const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [products, setProducts] = useState([]);
 
   const toggleExpand = (orderId) => {
     setExpandedOrderId((prev) => (prev === orderId ? null : orderId));
@@ -54,6 +56,13 @@ const ViewOrderInformation = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Fetch products for search functionality
+    HomeView.ViewProductHome().then((data) => {
+      setProducts(data);
+    });
+  }, []);
+
   const getStatusColor = (status) => {
     switch (status) {
       case 0:
@@ -77,7 +86,7 @@ const ViewOrderInformation = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <HeaderF5 />
+      <HeaderF5 products={products} />
       <div className="flex flex-col gap-5 px-6 pt-4 pb-10">
         <div className="text-2xl font-bold text-center uppercase">
           Danh sách đơn hàng
