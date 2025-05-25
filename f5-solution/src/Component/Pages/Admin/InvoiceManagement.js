@@ -68,8 +68,6 @@ const InvoiceManagement = () => {
     try {
       const response = await axios.get("https://localhost:7030/api/HoaDon");
       const data = response.data;
-      console.log("Đây là dữ liệu hóa đơn:", JSON.stringify(data, null, 2));
-
       setInvoices(data || []);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu hóa đơn:", error);
@@ -209,10 +207,6 @@ const InvoiceManagement = () => {
         } catch {
           const updateUrl = `https://localhost:7030/api/HoaDon/${editingInvoice.id}`;
           console.log("Full Update URL:", updateUrl);
-          console.log(
-            "Full Invoice Data:",
-            JSON.stringify(invoiceData, null, 2)
-          );
         }
       } else {
         // Add new invoice using POST method
@@ -243,11 +237,7 @@ const InvoiceManagement = () => {
     }
   };
   useEffect(() => {
-    console.log("Invoice Details:", invoiceDetails);
     const total = invoiceDetails.reduce((sum, item) => {
-      console.log(
-        `Item: quantity=${item.quantity}, unitPrice=${item.unitPrice}`
-      );
       return sum + item.quantity * item.unitPrice;
     }, 0);
     setTotalAmount(total);
@@ -294,8 +284,6 @@ const InvoiceManagement = () => {
       const response = await axios.get(
         `https://localhost:7030/api/HoaDon/${record.id}`
       );
-      console.log("hd " + record.id);
-      console.log("Chi tiết hóa đơn:", response.data);
       if (!response || !response.data) {
         notification.error({ message: "Không tìm thấy chi tiết hóa đơn" });
         return;
