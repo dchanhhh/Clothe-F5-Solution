@@ -118,7 +118,7 @@ const ProductManagement = () => {
       setColors(colorData);
       setSizes(sizeData);
     } catch (error) {
-      showToast("Lỗi khi tải dữ liệu", "error");
+      message.error("Lỗi khi tải dữ liệu", "error");
     } finally {
       setLoading(false);
     }
@@ -162,11 +162,6 @@ const ProductManagement = () => {
       setCurrentPage(1);
     }
   }, [searchTerm, statusFilter, products]);
-
-  const showToast = (message, type = "success") => {
-    // You can implement a custom toast notification here
-    alert(message);
-  };
 
   const fetchProduct = async (search = "", status = "all") => {
     setLoading(true);
@@ -219,7 +214,7 @@ const ProductManagement = () => {
             idDm: productDetails.danhMuc?.id,
             idCl: productDetails.chatLieu?.id,
             moTa: productDetails.moTa,
-            trangThai: productDetails.trangThai || 0,
+            trangThai: record.trangThai,
           });
 
           // Set image if exists
@@ -236,6 +231,7 @@ const ProductManagement = () => {
 
   const handleOpenDetailsModal = async (value = null) => {
     try {
+      setDrawerVisible(false);
       setDetailsModalVisible(true);
       setEditingProductDetail(null);
       setLoading(true);
@@ -296,18 +292,19 @@ const ProductManagement = () => {
     }
 
     try {
+      let response;
       if (fieldData.Id) {
-        // Ensure the check is on fieldData not productDetails
-        await ProductService.createProductDetail({
+        // Update existing product detail
+        response = await ProductService.createProductDetail({
           id: fieldData.Id,
           idMs: fieldData.name,
           idSize: fieldData.type,
           soLuongTon: fieldData.options,
           ...fieldData,
         });
-        message.success("Sản phẩm chi tiết đã được cập nhật thành công");
       } else {
-        await ProductService.createProductDetail({
+        // Create new product detail
+        response = await ProductService.createProductDetail({
           id: fieldData.Id,
           idMs: fieldData.name,
           IdSp: currentProductId,
@@ -315,11 +312,37 @@ const ProductManagement = () => {
           soLuongTon: fieldData.options,
           ...fieldData,
         });
-        message.success("Sản phẩm chi tiết mới đã được tạo thành công");
       }
+
+      // Get updated product details
+      const updatedDetails = await ProductService.getSanPhamChiTietByIdSanPham(
+        currentProductId
+      );
+
+      // Calculate new total quantity
+      const newTotalQuantity = updatedDetails.reduce(
+        (sum, detail) => sum + detail.soLuongTon,
+        0
+      );
+
+      // Update products state with new quantity
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.id === currentProductId
+            ? {
+                ...product,
+                sanPhamChiTiets: updatedDetails,
+                soLuongTon: newTotalQuantity,
+              }
+            : product
+        )
+      );
+
       form.resetFields();
-      console.log("Kết quả:", fieldData);
-      handleOpenDetailsModal(); // Refresh details
+      message.success(
+        fieldData.Id ? "Cập nhật thành công" : "Thêm mới thành công"
+      );
+      handleOpenDetailsModal(); // Refresh details modal
     } catch (error) {
       console.error("Lỗi khi thêm hoặc cập nhật chi tiết sản phẩm:", error);
       message.error(`Thêm hoặc cập nhật chi tiết sản phẩm thất bại: ${error}`);
@@ -333,11 +356,26 @@ const ProductManagement = () => {
         id: editingProduct?.id, // Include ID if editing
       };
 
+      const response = await ProductService.createProduct(formData);
+
       if (editingProduct) {
-        await ProductService.createProduct(formData);
+        // Update existing product in state
+        setProducts((prevProducts) =>
+          prevProducts.map((p) =>
+            p.id === editingProduct.id
+              ? {
+                  ...p,
+                  ...formData,
+                  danhMuc: { id: formData.idDm },
+                  chatLieu: { id: formData.idCl },
+                }
+              : p
+          )
+        );
         message.success("Sản phẩm đã được cập nhật thành công");
       } else {
-        await ProductService.createProduct(formData);
+        // Add new product to state
+        setProducts((prevProducts) => [...prevProducts, response]);
         message.success("Sản phẩm đã được tạo thành công");
       }
 
@@ -345,7 +383,6 @@ const ProductManagement = () => {
       form.resetFields();
       setImageUrl("");
       setEditingProduct(null);
-      fetchData(); // Refresh the product list
     } catch (error) {
       console.error("Lỗi khi tạo/cập nhật sản phẩm:", error);
       message.error(
@@ -364,10 +401,16 @@ const ProductManagement = () => {
       };
 
       await ProductService.createProduct(updatedProduct);
-      showToast("Chuyển trạng thái thành công");
-      fetchData();
+
+      setProducts((prevProducts) =>
+        prevProducts.map((p) =>
+          p.id === product.id ? { ...p, trangThai: newStatus ? 1 : 0 } : p
+        )
+      );
+
+      message.success("Chuyển trạng thái thành công");
     } catch (error) {
-      showToast("Lỗi khi chuyển trạng thái: " + error.message, "error");
+      message.error("Lỗi khi chuyển trạng thái: " + error.message, "error");
     }
   };
 
@@ -860,7 +903,7 @@ const ProductManagement = () => {
             layout="vertical"
             onFinish={handleCreateOrUpdate}
             initialValues={{
-              trangThai: 1, // Default value for new products
+              trangThai: 1,
             }}
           >
             {/* Image Upload */}
