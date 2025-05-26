@@ -59,7 +59,9 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
 
   useEffect(() => {
     if (!products || products.length === 0) {
-      HomeView.ViewProductHome().then(setProducts).catch(() => {});
+      HomeView.ViewProductHome()
+        .then(setProducts)
+        .catch(() => {});
     }
   }, []);
 
@@ -145,6 +147,8 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
       setFilteredProducts([]); // Xóa sản phẩm đã lọc
       setAvailableSizes([]); // Xóa size đã lọc
     } else {
+      // Reset số lượng về 1 khi chọn màu mới
+      setQuantity(1);
       // Lưu màu đã chọn
       setSelectedColor(mauSacId);
 
@@ -174,6 +178,8 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
 
   // Hàm xử lý khi người dùng chọn size
   const handleSelectSize = (sizeId) => {
+    // Reset số lượng về 1 khi chọn size mới
+    setQuantity(1);
     // Cập nhật size được chọn
     setSelectedSize(sizeId);
     console.log("Filtered sizes:", filteredSizes);
@@ -375,9 +381,19 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
     });
   }
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () =>
+  const increaseQuantity = () => {
+    if (quantity < soLuong) {
+      setQuantity((prev) => prev + 1);
+    } else {
+      notification.warning({
+        message: "Số lượng đã đạt giới hạn trong kho",
+      });
+    }
+  };
+
+  const decreaseQuantity = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
   const uniqueColors = Array.from(uniqueColorsMap.values());
   const uniqueSizes = Array.from(uniqueSizesMap.values());
 
@@ -438,7 +454,7 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="col-span-6 flex flex-col justify-between gap-4 p-4">
+          <div className="col-span-6 flex flex-col gap-4 p-4">
             <div className="flex flex-col gap-5">
               <div className="text-2xl font-bold uppercase text-center">
                 {product?.tenSp || "Tên sản phẩm"}
@@ -504,31 +520,72 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
                 )}
               </div>
 
-              <div className="flex gap-2 items-center">
-                <span className="text-base font-semibold">
-                  Số lượng trong kho:
-                </span>
-                <span className="text-base font-bold text-primary">
-                  {soLuong}
-                </span>
-              </div>
+              {selectedColor && selectedSize && (
+                <>
+                  <div className="flex gap-2 items-center">
+                    <span className="text-base font-semibold">Trạng thái:</span>
+                    <span
+                      className={`text-base font-bold ${
+                        soLuong > 0 ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {soLuong > 0 ? "Còn hàng" : "Hết hàng"}
+                    </span>
+                  </div>
 
-              <div className="flex gap-4 items-center">
-                <button
-                  className="p-2 m-0 outline-none"
-                  onClick={decreaseQuantity}
-                  disabled={quantity <= 1}
-                >
-                  <AiOutlineMinus size={16} />
-                </button>
-                <span className="text-base font-semibold">{quantity}</span>
-                <button
-                  className="p-2 m-0 outline-none"
-                  onClick={increaseQuantity}
-                >
-                  <AiOutlinePlus size={16} />
-                </button>
-              </div>
+                  {soLuong > 0 && (
+                    <div className="flex gap-4 items-center">
+                      <span className="text-base font-semibold">Số lượng:</span>
+                      <div className="flex gap-4 items-center">
+                        <button
+                          className={`p-2 m-0 outline-none ${
+                            quantity <= 1
+                              ? "text-gray-300 cursor-not-allowed"
+                              : "hover:text-primary cursor-pointer"
+                          }`}
+                          onClick={decreaseQuantity}
+                          disabled={quantity <= 1}
+                        >
+                          <AiOutlineMinus size={16} />
+                        </button>
+                        <input
+                          type="number"
+                          min="1"
+                          max={soLuong}
+                          value={quantity}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value);
+                            if (!isNaN(value)) {
+                              if (value < 1) {
+                                setQuantity(1);
+                              } else if (value > soLuong) {
+                                setQuantity(soLuong);
+                                notification.warning({
+                                  message: "Số lượng đã đạt giới hạn trong kho",
+                                });
+                              } else {
+                                setQuantity(value);
+                              }
+                            }
+                          }}
+                          className="w-14 p-0 text-center border border-gray-300 rounded-md py-1 text-base font-semibold focus:outline-none"
+                        />
+                        <button
+                          className={`p-2 m-0 outline-none ${
+                            quantity >= soLuong
+                              ? "text-gray-300 cursor-not-allowed"
+                              : "hover:text-primary cursor-pointer"
+                          }`}
+                          onClick={increaseQuantity}
+                          disabled={quantity >= soLuong}
+                        >
+                          <AiOutlinePlus size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
             <div className="flex flex-col gap-3">
               <div
