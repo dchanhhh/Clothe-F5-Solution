@@ -16,34 +16,52 @@ const StatisticsPage = () => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [customers, setCustomers] = useState(0);
 
-  const startDate = dateRange[0] ? dateRange[0].format("YYYY-MM-DD") : "2024-01-01";
-  const endDate = dateRange[1] ? dateRange[1].format("YYYY-MM-DD") : "2024-12-31";
-  const year = 2024;
+  const startDate = dateRange[0]
+    ? dateRange[0].format("YYYY-MM-DD")
+    : "2025-01-01";
+  const endDate = dateRange[1]
+    ? dateRange[1].format("YYYY-MM-DD")
+    : "2025-12-31";
+  const year = 2025;
 
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
         // Lấy tổng doanh thu
-        const revenue = await StatisticsService.getTotalRevenue(startDate, endDate);
+        const revenue = await StatisticsService.getTotalRevenue(
+          startDate,
+          endDate
+        );
         setTotalRevenue(revenue);
-console.log(revenue);
+        console.log(revenue);
 
         // Lấy tổng số đơn hàng
-        const orders = await StatisticsService.getTotalOrders(startDate, endDate);
+        const orders = await StatisticsService.getTotalOrders(
+          startDate,
+          endDate
+        );
         setTotalOrders(orders);
-console.log(orders);
+        console.log(orders);
 
         // Lấy tổng số sản phẩm đã bán
-        const productsSold = await StatisticsService.getTotalProductsSold(startDate, endDate);
+        const productsSold = await StatisticsService.getTotalProductsSold(
+          startDate,
+          endDate
+        );
         setTotalProductsSold(productsSold);
-console.log(productsSold);
+        console.log(productsSold);
 
         // Lấy số lượng đơn hàng theo trạng thái
-        const statusCounts = await StatisticsService.getOrderStatusCounts(startDate, endDate);
+        const statusCounts = await StatisticsService.getOrderStatusCounts(
+          startDate,
+          endDate
+        );
         setOrderStatusCounts(statusCounts);
-console.log(statusCounts)
+        console.log(statusCounts);
         // Lấy doanh thu theo tháng
-        const monthlyRevenueData = await StatisticsService.getMonthlyRevenue(year);
+        const monthlyRevenueData = await StatisticsService.getMonthlyRevenue(
+          year
+        );
 
         // Thêm các tháng không có dữ liệu
         const allMonths = Array.from({ length: 12 }, (_, i) => ({
@@ -52,7 +70,9 @@ console.log(statusCounts)
         }));
 
         const completeMonthlyRevenue = allMonths.map((monthData) => {
-          const existingData = monthlyRevenueData.find((item) => item.month === monthData.month);
+          const existingData = monthlyRevenueData.find(
+            (item) => item.month === monthData.month
+          );
           return {
             month: monthData.month,
             revenue: existingData ? existingData.revenue : 0,
@@ -74,9 +94,18 @@ console.log(statusCounts)
   }, [startDate, endDate, year]);
 
   const monthColors = [
-    "#FF5733", "#33FF57", "#3357FF", "#F0A500", "#F05454",
-    "#A7C7E7", "#C70039", "#900C3F", "#FFC300", "#581845",
-    "#DAF7A6", "#FF8C42",
+    "#FF5733",
+    "#33FF57",
+    "#3357FF",
+    "#F0A500",
+    "#F05454",
+    "#A7C7E7",
+    "#C70039",
+    "#900C3F",
+    "#FFC300",
+    "#581845",
+    "#DAF7A6",
+    "#FF8C42",
   ];
   const columnConfig = {
     data: monthlyRevenue.map((item) => ({
@@ -88,9 +117,18 @@ console.log(statusCounts)
     colorField: "monthLabel", // Trường dùng để phân biệt màu sắc
     color: (month) => {
       const colors = [
-        "#FF5733", "#33FF57", "#3357FF", "#FFC300", "#581845", 
-        "#DAF7A6", "#C70039", "#900C3F", "#FF8C42", "#A7C7E7",
-        "#FF33F6", "#33FFF6"
+        "#FF5733",
+        "#33FF57",
+        "#3357FF",
+        "#FFC300",
+        "#581845",
+        "#DAF7A6",
+        "#C70039",
+        "#900C3F",
+        "#FF8C42",
+        "#A7C7E7",
+        "#FF33F6",
+        "#33FFF6",
       ]; // Mảng màu cho 12 tháng
       return colors[month - 1]; // Gán màu tương ứng với tháng
     },
@@ -110,15 +148,13 @@ console.log(statusCounts)
       monthLabel: {
         alias: "Tháng",
       },
-    
+
       revenue: {
         alias: "Doanh thu (VNĐ)",
       },
     },
     label: false, // Tắt hiển thị giá trị trên đỉnh cột
   };
-  
-
 
   const orderStatusInVietnamese = {
     Pending: "Chờ xử lý",
@@ -146,8 +182,6 @@ console.log(statusCounts)
 
   return (
     <div style={{ padding: "20px" }}>
-
-
       <Row gutter={16}>
         <Col span={6}>
           <Card style={{ backgroundColor: "#e6f7ff" }}>
@@ -198,7 +232,6 @@ console.log(statusCounts)
       </Row>
 
       <Row gutter={16} style={{ marginTop: "20px" }}>
-
         <Col span={9}>
           <Row gutter={16}>
             <Col span={24}>
@@ -217,7 +250,6 @@ console.log(statusCounts)
         </Col>
 
         <Col span={15}>
-
           <Card title="Thống kê doanh thu theo năm" bordered={false}>
             <Column {...columnConfig} />
           </Card>
