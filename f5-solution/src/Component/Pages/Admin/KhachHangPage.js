@@ -256,9 +256,6 @@ const KhachHangPage = () => {
                   Email
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Hình Ảnh
-                </th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Trạng thái
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -274,43 +271,51 @@ const KhachHangPage = () => {
                 : filteredKhachHangs
                     .slice((currentPage - 1) * pageSize, currentPage * pageSize)
                     .map((khachHang, index) => (
-                      <tr key={khachHang.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
+                      <tr key={khachHang.id}>
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
                           {(currentPage - 1) * pageSize + index + 1}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
                           {khachHang.hoVaTenKh}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
-                          {khachHang.gioiTinh ? 'Nam' : 'Nữ'}
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                          {khachHang.gioiTinh ? "Nam" : "Nữ"}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
-                          {moment(khachHang.ngaySinh).format('DD/MM/YYYY')}
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                          {khachHang.ngaySinh
+                            ? new Date(khachHang.ngaySinh).toLocaleDateString()
+                            : "Chưa cập nhật"}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
                           {khachHang.soDienThoai}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
                           {khachHang.email}
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-center">
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
                           <div className="flex justify-center">
-                            <img
-                              src={khachHang.image}
-                              alt={khachHang.hoVaTenKh}
-                              className="w-16 h-16 object-cover rounded-md"
-                            />
+                            <Switch
+                              checked={khachHang.trangThai === 1}
+                              onChange={(checked) =>
+                                handleStatusChange(khachHang, checked)
+                              }
+                              className={`${
+                                khachHang.trangThai === 1
+                                  ? "bg-blue-600"
+                                  : "bg-gray-200"
+                              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+                            >
+                              <span
+                                className={`${
+                                  khachHang.trangThai === 1
+                                    ? "translate-x-6"
+                                    : "translate-x-1"
+                                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                              />
+                            </Switch>
                           </div>
                         </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-center">
-                          <Switch
-                            checked={khachHang.trangThai === 1}
-                            onChange={(checked) =>
-                              handleStatusChange(khachHang, checked)
-                            }
-                          />
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 text-center">
+                        <td className="px-4 py-3 text-center whitespace-nowrap">
                           <div className="flex justify-center">
                             <div
                               onClick={() => openModal(khachHang)}

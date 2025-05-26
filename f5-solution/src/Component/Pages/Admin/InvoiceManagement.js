@@ -308,10 +308,7 @@ const InvoiceManagement = () => {
     notification.success({ message: "Hóa đơn đã bị xóa!" });
   };
   const sortedInvoices = invoices.sort((a, b) => {
-    if (a.trangThai !== b.trangThai) {
-      return a.trangThai - b.trangThai;
-    }
-    return new Date(a.ngayTao) - new Date(b.ngayTao);
+    return new Date(b.ngayTao) - new Date(a.ngayTao);
   });
   const filteredInvoices = sortedInvoices.filter((invoice) => {
     const matchesSearchText =
@@ -965,7 +962,7 @@ const InvoiceManagement = () => {
                     "Không có thông tin"}
                 </p>
                 <p>
-                  <strong>Địa chỉ:</strong>
+                  <strong>Địa chỉ:</strong>{" "}
                   {selectedInvoiceDetails.diaChiNhanHang ||
                     (selectedInvoiceDetails.khachHang?.diaChis &&
                     selectedInvoiceDetails.khachHang.diaChis.length > 0
