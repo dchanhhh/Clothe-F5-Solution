@@ -344,12 +344,18 @@ function Checkout() {
         userId,
         orderData
       );
-      console.log("hhhhhhh", paymentResponse);
-      window.location.href = paymentResponse;
+      console.log("URL thanh toán VNPay:", paymentResponse);
 
-      await fetchCartData(userId); // Cập nhật giỏ hàng sau khi đặt hàng thành công
-      const orderId = userId;
-      navigate(`/order/${orderId}`);
+      // Chuyển hướng người dùng đến trang thanh toán VNPay
+      if (paymentResponse) {
+        window.location.href = paymentResponse;
+      } else {
+        notification.error({
+          message: "Lỗi thanh toán",
+          description: "Không thể tạo đường dẫn thanh toán. Vui lòng thử lại!",
+        });
+      }
+      await fetchCartData(userId);
     } catch (error) {
       setLoading(false);
       setError(
