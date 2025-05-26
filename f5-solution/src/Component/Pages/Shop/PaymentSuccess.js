@@ -1,63 +1,53 @@
 import React from "react";
-import { Result, Button } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import HeaderF5 from "../../Layouts/Header/Header";
+import { BsCheckCircleFill } from "react-icons/bs";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const orderDetails = location.state?.orderDetails;
 
   return (
     <>
       <HeaderF5 />
-      <div className="min-h-screen bg-[#f5f5f5] py-8">
+      <div className="min-h-screen bg-gray-100 py-8">
         <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-md">
-          <Result
-            status="success"
-            title="Thanh toán thành công!"
-            subTitle={
-              <div className="text-center">
-                <p className="text-lg mb-2">
-                  Cảm ơn bạn đã mua hàng tại F5 Fashion
-                </p>
-                {orderDetails && (
-                  <div className="text-left mt-4 border-t pt-4">
-                    <h3 className="text-xl font-semibold mb-3">
-                      Chi tiết đơn hàng:
-                    </h3>
-                    <p>
-                      <strong>Mã đơn hàng:</strong> {orderDetails.maHoaDon}
-                    </p>
-                    <p>
-                      <strong>Tổng tiền:</strong>{" "}
-                      {orderDetails.tongTien?.toLocaleString("vi-VN")} VNĐ
-                    </p>
-                    <p>
-                      <strong>Phí vận chuyển:</strong>{" "}
-                      {orderDetails.phiShip?.toLocaleString("vi-VN")} VNĐ
-                    </p>
-                    <p>
-                      <strong>Thành tiền:</strong>{" "}
-                      {orderDetails.thanhTien?.toLocaleString("vi-VN")} VNĐ
-                    </p>
-                  </div>
-                )}
-              </div>
-            }
-            extra={[
-              <Button
-                type="primary"
-                key="console"
-                onClick={() => navigate("/order/" + orderDetails?.id)}
+          <div className="flex flex-col items-center justify-center space-y-6">
+            {/* Success Icon */}
+            <div className="text-green-500 text-6xl">
+              <BsCheckCircleFill />
+            </div>
+
+            {/* Success Title */}
+            <h1 className="text-2xl font-bold text-green-600">
+              Thanh toán thành công!
+            </h1>
+
+            {/* Success Message */}
+            <p className="text-lg text-gray-700 text-center">
+              Cảm ơn bạn đã mua hàng tại F5 Fashion
+            </p>
+
+            {/* Buttons */}
+            <div className="flex gap-4 mt-8">
+              <button
+                onClick={() =>
+                  navigate(
+                    "/order/" +
+                      JSON.parse(localStorage.getItem("user"))?.IdKhachhang
+                  )
+                }
+                className="bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out"
               >
                 Xem chi tiết đơn hàng
-              </Button>,
-              <Button key="buy" onClick={() => navigate("/")}>
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out border border-gray-300"
+              >
                 Tiếp tục mua sắm
-              </Button>,
-            ]}
-          />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

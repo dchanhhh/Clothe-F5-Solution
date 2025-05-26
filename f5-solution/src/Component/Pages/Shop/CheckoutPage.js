@@ -239,7 +239,7 @@ function Checkout() {
         {
           id: IdCuaHang,
           diaChiChiTiet:
-            "Cửa hàng BBQ - 123 Đường ABC, Quận 1, TP. Hồ Chí Minh",
+            "63 An Trai, Xã Vân Canh, Huyện Hoài Đức, Thành phố Hà Nội",
         },
       ]);
       setGhiChu("Nhận tại cửa hàng");
@@ -281,11 +281,7 @@ function Checkout() {
     } else if (/\d/.test(TenNguoiNhan)) {
       formIsValid = false;
       errorObj.TenNguoiNhan = "Tên không được chứa số!";
-    } else if (
-      /[^a-zA-Z\sàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/.test(
-        TenNguoiNhan
-      )
-    ) {
+    } else if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+/.test(TenNguoiNhan)) {
       formIsValid = false;
       errorObj.TenNguoiNhan = "Tên không được chứa ký tự đặc biệt!";
     } else if (TenNguoiNhan.length < 2) {
