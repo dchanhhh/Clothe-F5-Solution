@@ -270,7 +270,7 @@ const InvoiceManagement = () => {
       );
       notification.success({ message: "Trạng thái hóa đơn đã được cập nhật!" });
       await fetchInvoices();
-      setIsStatusModalVisible(false); // Close modal
+      setIsStatusModalVisible(false);
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái hóa đơn:", error);
       notification.error({
@@ -543,16 +543,16 @@ const InvoiceManagement = () => {
       content: [
         { text: "F5 Fashion", style: "header" },
         {
-          text: "123 Đường ABC, Phường XYZ, cầu giấy, TP.HN",
+          text: "63 đường An Trai, Vân Canh, Hoài Đức, Hà Nội",
           style: "subheader",
         },
-        { text: "Hotline: 0123 456 789", style: "subheader" },
+        { text: "Hotline: 0855 338 978", style: "subheader" },
         {
           canvas: [
             { type: "line", x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1 },
           ],
         },
-        { text: `Mã HĐ: ${selectedInvoiceDetails.maHoaDon}`, style: "info" },
+        // { text: `Mã HĐ: ${selectedInvoiceDetails.maHoaDon}`, style: "info" },
         {
           text: `Ngày: ${new Date(
             selectedInvoiceDetails.ngayTao
@@ -566,7 +566,7 @@ const InvoiceManagement = () => {
           ],
         },
         {
-          text: `KH: ${
+          text: `Khách Hàng: ${
             selectedInvoiceDetails.khachHang?.hoVaTenKh || "Khách lẻ"
           }`,
           style: "info",
@@ -582,6 +582,7 @@ const InvoiceManagement = () => {
             { type: "line", x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 1 },
           ],
         },
+        { text: "Chi tiết sản phẩm:", style: "info" },
         ...selectedInvoiceDetails.hoaDonChiTiets
           .map((item) => [
             {
@@ -591,9 +592,7 @@ const InvoiceManagement = () => {
             {
               columns: [
                 {
-                  text: `${item.soLuong} x ${item.donGia.toLocaleString(
-                    "vi-VN"
-                  )}`,
+                  text: `x ${item.soLuong}`,
                   width: "50%",
                 },
                 {
@@ -626,7 +625,7 @@ const InvoiceManagement = () => {
         },
         {
           columns: [
-            { text: "Tiền mặt:", style: "payment", width: "50%" },
+            { text: "Tiền đã trả:", style: "payment", width: "50%" },
             {
               text: `${selectedInvoiceDetails.tongTien.toLocaleString(
                 "vi-VN"
