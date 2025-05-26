@@ -13,6 +13,7 @@ import ContactPage from "./Component/Pages/Shop/ContactPage";
 // import ProductList from './Component/Pages/Shop/ProductList';
 import Checkout from "./Component/Pages/Shop/CheckoutPage";
 import ViewOrderInformation from "./Component/Pages/Shop/ViewOrderInformation";
+import PaymentSuccess from "./Component/Pages/Shop/PaymentSuccess";
 import "./App.css";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/order/:id" element={<ViewOrderInformation />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
       </div>
     </Router>
