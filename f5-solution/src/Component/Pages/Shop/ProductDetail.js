@@ -405,7 +405,79 @@ const ProductDetail = ({ products: propsProducts = [] }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-[#f5f5f5]">
+        <HeaderF5 products={allProducts} />
+        <div className="flex flex-col gap-10 pt-5 pb-12 mx-[12%]">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-2 h-[600px]">
+              <div className="flex flex-col gap-2 items-center justify-center mr-1">
+                {[...Array(4)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-full h-[144px] bg-gray-200 animate-pulse"
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="col-span-4 border border-gray-300">
+              <div className="w-full h-full bg-gray-200 animate-pulse" />
+            </div>
+
+            <div className="col-span-6 flex flex-col gap-4 p-4">
+              <div className="flex flex-col gap-5">
+                <div className="h-8 bg-gray-200 w-3/4 mx-auto animate-pulse rounded" />
+                <div className="h-6 bg-gray-200 w-1/3 animate-pulse rounded" />
+                <div className="h-8 bg-gray-200 w-1/4 animate-pulse rounded" />
+                <div className="h-6 bg-gray-200 w-1/3 animate-pulse rounded" />
+                <div className="flex flex-col gap-2">
+                  <div className="h-6 bg-gray-200 w-1/4 animate-pulse rounded" />
+                  <div className="flex gap-2">
+                    {[...Array(4)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="w-10 h-10 bg-gray-200 animate-pulse rounded-full"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <div className="h-6 bg-gray-200 w-1/4 animate-pulse rounded" />
+                  <div className="flex gap-2">
+                    {[...Array(4)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="w-10 h-10 bg-gray-200 animate-pulse rounded-full"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 mt-auto">
+                <div className="h-10 bg-gray-200 animate-pulse rounded-lg" />
+                <div className="h-10 bg-gray-200 animate-pulse rounded-lg" />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <div className="h-8 bg-gray-200 w-1/2 mx-auto animate-pulse rounded" />
+            <div className="grid grid-cols-4 gap-4">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="flex flex-col gap-2">
+                  <div className="aspect-square bg-gray-200 animate-pulse rounded-xl" />
+                  <div className="h-6 bg-gray-200 w-3/4 mx-auto animate-pulse rounded" />
+                  <div className="h-6 bg-gray-200 w-1/2 mx-auto animate-pulse rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
