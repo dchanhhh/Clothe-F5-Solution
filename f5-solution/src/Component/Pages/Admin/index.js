@@ -38,6 +38,10 @@ const Dashboard = () => {
     if (location.pathname === "/LoginAdmin" && localStorage.getItem("token")) {
       setIsAuthenticated(true);
     }
+    if (location.pathname === "/dashboard") {
+      setActiveMenuItem("ThongKe");
+      setCurrentContent(<StatisticsPage />);
+    }
   }, [location]);
 
   const handleMenuClick = (key) => {
